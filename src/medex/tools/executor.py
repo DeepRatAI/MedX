@@ -364,7 +364,7 @@ class ToolExecutor:
         import json
 
         args_str = json.dumps(call.arguments, sort_keys=True)
-        hash_val = hashlib.md5(args_str.encode()).hexdigest()[:16]
+        hash_val = hashlib.sha256(args_str.encode()).hexdigest()[:16]
         return f"tool:{call.tool_name}:{hash_val}"
 
     # -------------------------------------------------------------------------

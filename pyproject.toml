@@ -120,6 +120,8 @@ select = [
 ignore = [
     "E501",   # line too long (handled by black)
     "B008",   # do not perform function calls in argument defaults
+    "I001",   # import-sorting (handled by standalone isort in CI)
+    "I002",   # missing-required-import (handled by standalone isort)
     "F821",   # undefined-name (legacy code, tracked in #2)
     "F841",   # unused-variable (legacy code, tracked in #2)
     "B007",   # unused-loop-control-variable
@@ -151,7 +153,8 @@ skip_gitignore = true
 
 [tool.bandit]
 exclude_dirs = ["tests", "scripts"]
-skips = ["B101"]
+# B101: assert used (test helper), B104: bind 0.0.0.0 (intentional for Docker containers)
+skips = ["B101", "B104"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
