@@ -21,7 +21,6 @@ from enum import Enum
 from typing import Any
 from uuid import uuid4
 
-
 # =============================================================================
 # Enumerations
 # =============================================================================
@@ -390,9 +389,9 @@ class AgentState:
         """Convert to dictionary."""
         return {
             "phase": self.phase.value,
-            "previous_phase": self.previous_phase.value
-            if self.previous_phase
-            else None,
+            "previous_phase": (
+                self.previous_phase.value if self.previous_phase else None
+            ),
             "elapsed_ms": self.elapsed_ms,
             "iteration_count": self.iteration_count,
             "has_plan": self.plan is not None,

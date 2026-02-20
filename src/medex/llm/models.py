@@ -24,7 +24,6 @@ from enum import Enum
 from typing import Any
 from uuid import uuid4
 
-
 # =============================================================================
 # Enumerations
 # =============================================================================
@@ -256,9 +255,11 @@ class Message:
             name=data.get("name"),
             tool_call_id=data.get("tool_call_id"),
             tool_calls=data.get("tool_calls"),
-            timestamp=datetime.fromisoformat(data["timestamp"])
-            if "timestamp" in data
-            else datetime.utcnow(),
+            timestamp=(
+                datetime.fromisoformat(data["timestamp"])
+                if "timestamp" in data
+                else datetime.utcnow()
+            ),
             token_count=data.get("token_count"),
             metadata=data.get("metadata", {}),
         )

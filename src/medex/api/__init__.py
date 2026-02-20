@@ -82,7 +82,9 @@ from .websocket import (
     ConnectionState,
     WebSocketHandler,
     WSCloseCode,
-    WSMessage as WebSocketMessage,
+)
+from .websocket import WSMessage as WebSocketMessage
+from .websocket import (
     WSMessageType,
     create_connection_manager,
     create_websocket_handler,

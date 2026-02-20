@@ -16,28 +16,28 @@ Architecture:
     - Qdrant: Vector database (RAG embeddings, knowledge base search)
 """
 
+from src.medex.db.connection import (
+    AsyncSessionLocal,
+    close_db,
+    get_async_engine,
+    get_async_session,
+    init_db,
+)
 from src.medex.db.models import (
     Base,
-    User,
     Conversation,
+    KnowledgeBaseIndex,
     Message,
     PatientContext,
     ToolExecution,
-    KnowledgeBaseIndex,
-)
-from src.medex.db.connection import (
-    get_async_engine,
-    get_async_session,
-    AsyncSessionLocal,
-    init_db,
-    close_db,
+    User,
 )
 from src.medex.db.repositories import (
-    UserRepository,
     ConversationRepository,
     MessageRepository,
     PatientContextRepository,
     ToolExecutionRepository,
+    UserRepository,
 )
 
 __all__ = [

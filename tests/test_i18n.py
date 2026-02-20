@@ -6,13 +6,13 @@ Verifica traducciones, cambio de idioma y funciones helper.
 
 import pytest
 from i18n import (
-    get_translator,
-    t,
-    set_language,
-    get_language,
-    Translator,
     TRANSLATIONS,
     Language,
+    Translator,
+    get_language,
+    get_translator,
+    set_language,
+    t,
 )
 
 

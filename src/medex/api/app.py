@@ -19,7 +19,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
-
 # =============================================================================
 # Application Configuration
 # =============================================================================
@@ -433,7 +432,7 @@ class LifespanManager:
         self.app = app
         self._start_time = time.time()
 
-    async def __aenter__(self) -> "LifespanManager":
+    async def __aenter__(self) -> LifespanManager:
         """Enter lifespan context (startup)."""
         await self.app.startup()
         return self

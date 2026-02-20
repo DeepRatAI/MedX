@@ -5,7 +5,6 @@ Pytest configuration for Playwright E2E tests.
 """
 
 import pytest
-from playwright.sync_api import Page, expect
 
 
 def pytest_configure(config):

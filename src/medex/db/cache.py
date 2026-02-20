@@ -20,15 +20,14 @@ Configuration via environment variables:
 
 from __future__ import annotations
 
-import os
 import json
 import logging
-from typing import Optional, Any, TypeVar
+import os
 from datetime import timedelta
+from typing import Any, TypeVar
 
 import redis.asyncio as redis
 from redis.asyncio.connection import ConnectionPool
-
 
 # =============================================================================
 # Logging Configuration
@@ -68,8 +67,8 @@ def get_key_prefix() -> str:
 # Connection Management
 # =============================================================================
 
-_redis_pool: Optional[ConnectionPool] = None
-_redis_client: Optional[redis.Redis] = None
+_redis_pool: ConnectionPool | None = None
+_redis_client: redis.Redis | None = None
 
 
 async def get_redis_client() -> redis.Redis:
@@ -202,7 +201,7 @@ class CacheService:
         """Build full key with prefix."""
         return f"{self.prefix}{key}"
 
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Any | None:
         """
         Get value from cache.
 
@@ -227,7 +226,7 @@ class CacheService:
         self,
         key: str,
         value: Any,
-        ttl: Optional[timedelta] = None,
+        ttl: timedelta | None = None,
     ) -> bool:
         """
         Set value in cache.
@@ -309,7 +308,7 @@ class ContextWindowCache(CacheService):
     async def get_context(
         self,
         conversation_id: str,
-    ) -> Optional[list[dict]]:
+    ) -> list[dict] | None:
         """
         Get cached context window for conversation.
 
@@ -454,7 +453,7 @@ class ToolResultCache(CacheService):
         self,
         tool_name: str,
         params: dict,
-    ) -> Optional[dict]:
+    ) -> dict | None:
         """
         Get cached tool result.
 
@@ -504,7 +503,7 @@ class SessionCache(CacheService):
     async def get_session(
         self,
         session_id: str,
-    ) -> Optional[dict]:
+    ) -> dict | None:
         """Get session data."""
         return await self.get(session_id)
 

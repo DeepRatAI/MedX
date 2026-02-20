@@ -21,8 +21,9 @@ import json
 import logging
 import os
 import time
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
-from typing import Any, AsyncIterator
+from typing import Any
 
 import httpx
 
@@ -37,7 +38,6 @@ from medex.llm.models import (
     StreamEventType,
     TokenUsage,
 )
-
 
 logger = logging.getLogger(__name__)
 

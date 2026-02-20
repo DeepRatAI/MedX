@@ -5,6 +5,7 @@
 **Medical AI Intelligence System**
 
 [![CI](https://github.com/DeepRatAI/MedX/actions/workflows/ci.yml/badge.svg)](https://github.com/DeepRatAI/MedX/actions/workflows/ci.yml)
+[![Canary](https://github.com/DeepRatAI/MedX/actions/workflows/canary.yml/badge.svg)](https://github.com/DeepRatAI/MedX/actions/workflows/canary.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -21,6 +22,23 @@ An open-source medical AI assistant that combines multi-model LLM routing, RAG-e
 
 ---
 
+## 🖥️ UI Preview
+
+<table>
+<tr>
+<td align="center"><strong>Clinical Consultation</strong></td>
+<td align="center"><strong>Drug Interaction Checker</strong></td>
+<td align="center"><strong>Emergency Triage</strong></td>
+</tr>
+<tr>
+<td><img src="docs/assets/ui-main-consultation.svg" alt="Main Consultation" width="100%"></td>
+<td><img src="docs/assets/ui-drug-interactions.svg" alt="Drug Interactions" width="100%"></td>
+<td><img src="docs/assets/ui-emergency-triage.svg" alt="Emergency Triage" width="100%"></td>
+</tr>
+</table>
+
+---
+
 ## ✨ Key Features
 
 | | Feature | Description |
@@ -28,7 +46,7 @@ An open-source medical AI assistant that combines multi-model LLM routing, RAG-e
 | 🎭 | **Dual-Mode Consultation** | Professional mode (SOAP notes, ICD-10, evidence-based protocols) and patient-friendly educational mode with automatic detection |
 | 🚨 | **Emergency Detection** | 50+ pattern recognizer with real-time triage classification (Critical / Urgent / Routine) across cardiac, respiratory, neurological, and trauma categories |
 | 🔬 | **Medical Image Analysis** | Vision-model powered interpretation for RX, CT, MRI, and ultrasound with modality validation and clinical context integration |
-| 📚 | **RAG Knowledge Base** | 1,061 medical conditions and 543+ medications indexed into Qdrant for vector-similarity retrieval, with ICD-10 coding and pharmaceutical interaction data |
+| 📚 | **RAG Knowledge Base** | 1,000+ medical conditions and 500+ medications indexed into Qdrant for vector-similarity retrieval, with ICD-10 coding and pharmaceutical interaction data |
 | 💊 | **Pharmaceutical Database** | Comprehensive drug information including dosages, contraindications, drug-drug interactions, and Micromedex-style monographs |
 | 🧠 | **Differential Diagnosis** | Structured diagnostic reasoning engine that generates ranked differential lists with supporting and opposing evidence |
 | 🔎 | **Scientific Literature Search** | Integrated PubMed and Semantic Scholar queries for evidence-based references and up-to-date research |
@@ -161,6 +179,7 @@ Tests use `pytest` with `pytest-asyncio` for async test support. Infrastructure-
 | [Tools Roadmap](docs/TOOLS_ROADMAP.md) | Planned tool integrations |
 | [User Guide](docs/user_guide.md) | End-user usage guide |
 | [Roadmap](docs/ROADMAP.md) | Development roadmap |
+| [Release Report](MEDX_PUBLIC_RELEASE_REPORT.md) | Public release audit report |
 
 ---
 

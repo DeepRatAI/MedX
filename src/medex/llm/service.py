@@ -15,23 +15,20 @@ Integrates:
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import time
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, AsyncIterator
+from typing import Any
 
 from medex.llm.models import (
-    FinishReason,
     LLMProvider,
     LLMRequest,
     LLMResponse,
     Message,
     ResponseFormat,
     StreamChunk,
-    StreamEventType,
-    TokenUsage,
 )
 from medex.llm.parser import (
     ParsedContentType,
@@ -46,15 +43,12 @@ from medex.llm.prompts import (
 )
 from medex.llm.router import (
     LLMRouter,
-    RouterConfig,
     get_llm_router,
 )
 from medex.llm.streaming import (
     StreamConfig,
     StreamHandler,
-    StreamState,
 )
-
 
 logger = logging.getLogger(__name__)
 

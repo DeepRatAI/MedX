@@ -64,95 +64,68 @@ Environment Variables:
     CEREBRAS_API_KEY: Cerebras API key
 """
 
-from medex.llm.models import (
-    # Enums
+from medex.llm.models import (  # Enums; Config; Messages; Responses; Status
     FinishReason,
-    LLMProvider,
-    MessageRole,
-    ResponseFormat,
-    StreamEventType,
-    # Config
     LLMConfig,
-    # Messages
-    Message,
-    # Responses
+    LLMProvider,
     LLMRequest,
     LLMResponse,
-    StreamChunk,
-    TokenUsage,
-    # Status
+    Message,
+    MessageRole,
     ProviderStatus,
+    ResponseFormat,
+    StreamChunk,
+    StreamEventType,
+    TokenUsage,
 )
-from medex.llm.parser import (
-    # Enums
-    ParsedContentType,
-    UrgencyLevel,
-    # Data classes
+from medex.llm.parser import (  # Enums; Data classes; Parser; Factory
     DiagnosticInfo,
     DrugInfo,
+    ParsedContentType,
     ParsedMedicalReport,
     ParsedResponse,
-    # Parser
     ParserConfig,
     ResponseParser,
-    # Factory
+    UrgencyLevel,
     create_parser,
     get_parser,
 )
-from medex.llm.prompts import (
-    # Enums
+from medex.llm.prompts import (  # Enums; Config; Manager; Factory
     Language,
+    PromptConfig,
+    PromptManager,
     PromptType,
     UserMode,
-    # Config
-    PromptConfig,
-    # Manager
-    PromptManager,
-    # Factory
     create_prompt_manager,
     get_prompt_manager,
 )
-from medex.llm.router import (
-    # Config
-    RouterConfig,
-    # Client
+from medex.llm.router import (  # Config; Client; Router; Factory
     LLMClient,
-    # Router
     LLMRouter,
-    # Factory
+    RouterConfig,
     create_llm_router,
     get_llm_router,
     shutdown_llm_router,
 )
-from medex.llm.service import (
-    # Config
-    LLMServiceConfig,
-    # Metrics
-    LLMServiceMetrics,
-    # Service
+from medex.llm.service import (  # Config; Metrics; Service; Factory
     LLMService,
-    # Factory
+    LLMServiceConfig,
+    LLMServiceMetrics,
     create_llm_service,
     get_llm_service,
     shutdown_llm_service,
 )
-from medex.llm.streaming import (
-    # Config
+from medex.llm.streaming import (  # Config; State; Handler; Utilities; Factory
     StreamConfig,
-    # State
-    StreamState,
-    # Handler
     StreamHandler,
-    # Utilities
+    StreamState,
+    create_stream_handler,
     format_chunk_sse,
     format_done,
     format_heartbeat,
     format_sse_event,
-    # Factory
-    create_stream_handler,
     get_stream_handler,
 )
-
 
 __all__ = [
     # === Models ===

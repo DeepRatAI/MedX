@@ -24,31 +24,26 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any, AsyncIterator, Callable
+from collections.abc import AsyncIterator, Callable
+from dataclasses import dataclass
+from typing import Any
 
 from medex.agent.models import (
-    ActionType,
     AgentContext,
     AgentEvent,
     AgentPhase,
     AgentPlan,
     AgentResult,
-    AgentState,
     IntentType,
     UrgencyLevel,
     UserIntent,
 )
-from medex.agent.state import StateManager, StateManagerConfig, create_state_manager
 from medex.agent.planner import (
-    PlanBuilder,
-    PlanExecutor,
     PlanExecutorConfig,
     create_plan_builder,
     create_plan_executor,
 )
-
+from medex.agent.state import StateManagerConfig, create_state_manager
 
 logger = logging.getLogger(__name__)
 
@@ -688,9 +683,11 @@ class AgentController:
                 content=f"I apologize, but I encountered an error processing your request: {e}",
                 success=False,
                 error=str(e),
-                latency_ms=self.state_manager.state.elapsed_ms
-                if self.state_manager.state
-                else 0,
+                latency_ms=(
+                    self.state_manager.state.elapsed_ms
+                    if self.state_manager.state
+                    else 0
+                ),
             )
 
     async def process_stream(

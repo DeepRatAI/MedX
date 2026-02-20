@@ -18,10 +18,10 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable
+    pass
 
 
 # =============================================================================
@@ -421,7 +421,7 @@ class ErrorHandlingMiddleware(MiddlewareBase):
         self, ctx: RequestContext, request: Any, error: Exception
     ) -> Any | None:
         """Handle and format error response."""
-        from .models import APIError, ErrorCode
+        from .models import APIError
 
         # Determine error type
         error_code = self._classify_error(error)
@@ -436,7 +436,7 @@ class ErrorHandlingMiddleware(MiddlewareBase):
 
         return api_error
 
-    def _classify_error(self, error: Exception) -> "ErrorCode":
+    def _classify_error(self, error: Exception) -> ErrorCode:
         """Classify error to error code."""
         from .models import ErrorCode
 
@@ -455,7 +455,7 @@ class ErrorHandlingMiddleware(MiddlewareBase):
         else:
             return ErrorCode.INTERNAL_ERROR
 
-    def _get_user_message(self, code: "ErrorCode") -> str:
+    def _get_user_message(self, code: ErrorCode) -> str:
         """Get user-friendly error message."""
         from .models import ErrorCode
 
@@ -488,7 +488,7 @@ class MiddlewareStack:
         """Initialize middleware stack."""
         self._middlewares: list[MiddlewareBase] = []
 
-    def add(self, middleware: MiddlewareBase) -> "MiddlewareStack":
+    def add(self, middleware: MiddlewareBase) -> MiddlewareStack:
         """Add middleware to stack."""
         self._middlewares.append(middleware)
         return self

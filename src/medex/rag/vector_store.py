@@ -23,15 +23,13 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
-from uuid import uuid4
 
 from .models import Chunk, RelevanceLevel, SearchResult
 
 if TYPE_CHECKING:
     from qdrant_client import QdrantClient
-    from qdrant_client.models import PointStruct
 
 logger = logging.getLogger(__name__)
 
@@ -268,7 +266,7 @@ class VectorStore:
         Returns:
             Number of deleted chunks
         """
-        from qdrant_client.models import Filter, FieldCondition, MatchValue
+        from qdrant_client.models import FieldCondition, Filter, MatchValue
 
         # First count
         loop = asyncio.get_event_loop()
@@ -472,7 +470,7 @@ class VectorStore:
 
     def _build_filter(self, filters: dict[str, Any]):
         """Build Qdrant filter from dict."""
-        from qdrant_client.models import Filter, FieldCondition, MatchValue
+        from qdrant_client.models import FieldCondition, Filter, MatchValue
 
         conditions = []
         for key, value in filters.items():

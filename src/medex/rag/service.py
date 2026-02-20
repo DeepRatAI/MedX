@@ -22,9 +22,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from .chunker import BaseChunker, ChunkerConfig, MedicalChunker, create_chunker
+from .chunker import BaseChunker, ChunkerConfig, create_chunker
 from .embedder import BaseEmbedder, EmbedderConfig, create_embedder
-from .models import Chunk, Document, DocumentType, RAGContext, RAGQuery, SearchResult
+from .models import Document, RAGContext, RAGQuery, SearchResult
 from .reranker import BaseReranker, RerankerConfig, create_reranker
 from .vector_store import VectorStore, VectorStoreConfig, create_vector_store
 
@@ -308,9 +308,9 @@ class RAGService:
         # Step 2: Search
         results = await self._vector_store.search(
             query_embedding=query_embedding.vector,
-            top_k=query.top_k * 2
-            if query.rerank
-            else query.top_k,  # Over-retrieve for reranking
+            top_k=(
+                query.top_k * 2 if query.rerank else query.top_k
+            ),  # Over-retrieve for reranking
             score_threshold=query.min_score,
             filters=query.filters,
         )

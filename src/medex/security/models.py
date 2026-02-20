@@ -20,7 +20,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-
 # =============================================================================
 # Enums
 # =============================================================================
@@ -265,9 +264,11 @@ class AuditEvent:
         return cls(
             event_id=data.get("event_id", str(uuid.uuid4())),
             event_type=AuditEventType(data.get("event_type", "data_read")),
-            timestamp=datetime.fromisoformat(data["timestamp"])
-            if isinstance(data.get("timestamp"), str)
-            else data.get("timestamp", datetime.utcnow()),
+            timestamp=(
+                datetime.fromisoformat(data["timestamp"])
+                if isinstance(data.get("timestamp"), str)
+                else data.get("timestamp", datetime.utcnow())
+            ),
             user_id=data.get("user_id"),
             session_id=data.get("session_id"),
             ip_address=data.get("ip_address"),
@@ -337,9 +338,11 @@ class ThreatDetection:
         """Convert to dictionary."""
         return {
             "threat_type": self.threat_type,
-            "pattern": self.pattern_matched[:50] + "..."
-            if len(self.pattern_matched) > 50
-            else self.pattern_matched,
+            "pattern": (
+                self.pattern_matched[:50] + "..."
+                if len(self.pattern_matched) > 50
+                else self.pattern_matched
+            ),
             "severity": self.severity.value,
             "blocked": self.blocked,
         }

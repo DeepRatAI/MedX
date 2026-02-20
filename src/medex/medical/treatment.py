@@ -15,7 +15,7 @@ Features:
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from medex.medical.models import (
@@ -23,12 +23,9 @@ from medex.medical.models import (
     DiagnosticHypothesis,
     EvidenceLevel,
     Medication,
-    RecommendationGrade,
     Specialty,
     TreatmentPlan,
-    UrgencyLevel,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -520,9 +517,11 @@ class TreatmentPlanner:
             monitoring=protocol.get("monitoring", []),
             follow_up=self._determine_follow_up(hypothesis),
             referrals=protocol.get("referrals", []),
-            patient_education=protocol.get("patient_education", [])
-            if self.config.include_education
-            else [],
+            patient_education=(
+                protocol.get("patient_education", [])
+                if self.config.include_education
+                else []
+            ),
         )
 
     def _create_symptomatic_plan(self, case: ClinicalCase) -> TreatmentPlan:

@@ -11,12 +11,11 @@ from dataclasses import dataclass, field
 
 from medex.providers.base import (
     ModelProvider,
-    ProviderConfig,
     ProviderResponse,
     ProviderStatus,
 )
-from medex.providers.moonshot import MoonshotProvider, MOONSHOT_CONFIG
-from medex.providers.huggingface import HuggingFaceProvider, HUGGINGFACE_MODELS
+from medex.providers.huggingface import HuggingFaceProvider
+from medex.providers.moonshot import MoonshotProvider
 
 
 @dataclass

@@ -15,22 +15,17 @@ Features:
 from __future__ import annotations
 
 import logging
-import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from medex.medical.models import (
     CIE10Code,
     ClinicalCase,
-    ConsultationType,
     DiagnosticHypothesis,
     DiagnosticPlan,
-    PatientProfile,
-    Specialty,
-    Symptom,
     LabValue,
+    Specialty,
 )
-
 
 logger = logging.getLogger(__name__)
 

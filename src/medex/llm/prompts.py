@@ -19,11 +19,9 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
 from typing import Any
 
-from medex.llm.models import Message, MessageRole
-
+from medex.llm.models import Message
 
 # =============================================================================
 # Enumerations

@@ -35,7 +35,6 @@ from medex.medical.reasoner import DiagnosticReasoner, DiagnosticReasonerConfig
 from medex.medical.treatment import TreatmentPlanner, TreatmentPlannerConfig
 from medex.medical.triage import TriageEngine, TriageEngineConfig
 
-
 if TYPE_CHECKING:
     from medex.medical.models import LabValue
 

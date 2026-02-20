@@ -19,19 +19,18 @@ import asyncio
 import json
 import logging
 import time
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, AsyncIterator, Callable
+from typing import Any
 
 from medex.llm.models import (
     FinishReason,
-    LLMRequest,
     LLMResponse,
     StreamChunk,
     StreamEventType,
     TokenUsage,
 )
-
 
 logger = logging.getLogger(__name__)
 

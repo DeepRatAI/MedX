@@ -20,30 +20,28 @@ Design Principles:
 
 from __future__ import annotations
 
-import uuid
 import logging
+import uuid
+from collections.abc import Sequence
 from datetime import datetime, timezone
-from typing import Optional, Sequence, TypeVar, Generic, Type, Any
-from collections.abc import AsyncGenerator
+from typing import Any, Generic, TypeVar
 
-from sqlalchemy import select, update, delete, func, and_, or_, desc
+from sqlalchemy import desc, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.medex.db.models import (
     Base,
-    User,
-    UserType,
     Conversation,
+    EmergencyLevel,
     Message,
     MessageRole,
     PatientContext,
-    EmergencyLevel,
     ToolExecution,
     ToolStatus,
-    KnowledgeBaseIndex,
+    User,
+    UserType,
 )
-
 
 # =============================================================================
 # Logging Configuration
@@ -71,7 +69,7 @@ class BaseRepository(Generic[T]):
             model = User
     """
 
-    model: Type[T]
+    model: type[T]
 
     def __init__(self, session: AsyncSession):
         """
@@ -82,7 +80,7 @@ class BaseRepository(Generic[T]):
         """
         self.session = session
 
-    async def get_by_id(self, id: uuid.UUID) -> Optional[T]:
+    async def get_by_id(self, id: uuid.UUID) -> T | None:
         """
         Get entity by primary key.
 
@@ -216,7 +214,7 @@ class UserRepository(BaseRepository[User]):
 
     model = User
 
-    async def get_by_session_id(self, session_id: str) -> Optional[User]:
+    async def get_by_session_id(self, session_id: str) -> User | None:
         """
         Get user by browser/client session ID.
 
@@ -362,7 +360,7 @@ class ConversationRepository(BaseRepository[Conversation]):
         self,
         conversation_id: uuid.UUID,
         message_limit: int = 100,
-    ) -> Optional[Conversation]:
+    ) -> Conversation | None:
         """
         Get conversation with eager-loaded messages.
 
@@ -577,9 +575,9 @@ class MessageRepository(BaseRepository[Message]):
         role: MessageRole,
         content: str,
         token_count: int = 0,
-        model_used: Optional[str] = None,
-        latency_ms: Optional[int] = None,
-        metadata: Optional[dict[str, Any]] = None,
+        model_used: str | None = None,
+        latency_ms: int | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> Message:
         """
         Create new message with auto-incrementing sequence.
@@ -718,7 +716,7 @@ class PatientContextRepository(BaseRepository[PatientContext]):
         self,
         conversation_id: uuid.UUID,
         patient_reference: str = "patient_1",
-    ) -> Optional[PatientContext]:
+    ) -> PatientContext | None:
         """
         Get latest context version for specific patient.
 
@@ -829,7 +827,7 @@ class ToolExecutionRepository(BaseRepository[ToolExecution]):
         tool_name: str,
         tool_category: str,
         input_params: dict[str, Any],
-        message_id: Optional[uuid.UUID] = None,
+        message_id: uuid.UUID | None = None,
     ) -> ToolExecution:
         """
         Create new tool execution record.
@@ -904,8 +902,8 @@ class ToolExecutionRepository(BaseRepository[ToolExecution]):
         self,
         execution_id: uuid.UUID,
         error_message: str,
-        error_traceback: Optional[str] = None,
-        latency_ms: Optional[int] = None,
+        error_traceback: str | None = None,
+        latency_ms: int | None = None,
     ) -> None:
         """
         Mark execution as failed.
@@ -982,7 +980,9 @@ class ToolExecutionRepository(BaseRepository[ToolExecution]):
                 ).label("success"),
                 func.avg(ToolExecution.latency_ms).label("avg_latency"),
                 func.sum(
-                    func.cast(ToolExecution.cache_hit == True, type_=func.Integer)  # noqa: E712
+                    func.cast(
+                        ToolExecution.cache_hit == True, type_=func.Integer
+                    )  # noqa: E712
                 ).label("cache_hits"),
             )
             .where(ToolExecution.tool_name == tool_name)

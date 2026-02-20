@@ -13,11 +13,15 @@ Tests cover:
 - Service façade
 """
 
-import asyncio
-import pytest
-from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
+
+from medex.agent.controller import (
+    AgentControllerConfig,
+    IntentAnalyzer,
+    create_agent_controller,
+)
 from medex.agent.models import (
     ActionType,
     AgentAction,
@@ -32,38 +36,23 @@ from medex.agent.models import (
     UrgencyLevel,
     UserIntent,
 )
-
-from medex.agent.state import (
-    StateManager,
-    StateManagerConfig,
-    StateSnapshot,
-    VALID_TRANSITIONS,
-    create_state_manager,
-)
-
 from medex.agent.planner import (
     PlanBuilder,
     PlanExecutor,
-    PlanExecutorConfig,
     create_plan_builder,
     create_plan_executor,
 )
-
-from medex.agent.controller import (
-    AgentController,
-    AgentControllerConfig,
-    IntentAnalyzer,
-    ResponseGenerator,
-    create_agent_controller,
-)
-
 from medex.agent.service import (
-    AgentService,
     AgentServiceConfig,
     ServiceMetrics,
     create_agent_service,
 )
-
+from medex.agent.state import (
+    VALID_TRANSITIONS,
+    StateManager,
+    StateManagerConfig,
+    create_state_manager,
+)
 
 # =============================================================================
 # Fixtures

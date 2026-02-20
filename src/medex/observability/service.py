@@ -26,7 +26,6 @@ from medex.observability.health import (
     PostgresHealthCheck,
     QdrantHealthCheck,
     RedisHealthCheck,
-    get_health_manager,
     init_health_manager,
 )
 from medex.observability.logging import (
@@ -37,12 +36,8 @@ from medex.observability.logging import (
     set_correlation_context,
 )
 from medex.observability.metrics import (
-    Counter,
-    Gauge,
-    Histogram,
     MetricsConfig,
     MetricsRegistry,
-    get_metrics_registry,
     inc_counter,
     init_metrics,
     observe_histogram,
@@ -53,7 +48,6 @@ from medex.observability.models import (
     ComponentType,
     HealthStatus,
     LogLevel,
-    ObservabilityConfig,
     SpanKind,
     SystemHealth,
 )
@@ -61,13 +55,11 @@ from medex.observability.tracing import (
     Span,
     Tracer,
     TracerConfig,
-    get_tracer,
     init_tracer,
     start_span,
     trace,
     trace_block,
 )
-
 
 logger = logging.getLogger(__name__)
 

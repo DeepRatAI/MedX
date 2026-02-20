@@ -22,8 +22,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
-from medex.observability.models import LogEntry, LogLevel
-
+from medex.observability.models import LogLevel
 
 # =============================================================================
 # Context Variables for Correlation

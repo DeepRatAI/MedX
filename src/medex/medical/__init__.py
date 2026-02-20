@@ -70,7 +70,6 @@ from medex.medical.triage import (
     create_triage_engine,
 )
 
-
 __all__ = [
     # Models - Enums
     "TriageLevel",

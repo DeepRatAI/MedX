@@ -19,12 +19,10 @@ import json
 import logging
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
 from typing import Any
 
 from medex.llm.models import LLMResponse
-
 
 logger = logging.getLogger(__name__)
 
@@ -178,9 +176,9 @@ class ParsedResponse:
             "parse_success": self.parse_success,
             "parse_errors": self.parse_errors,
             "extracted_entities": self.extracted_entities,
-            "medical_report": self.medical_report.to_dict()
-            if self.medical_report
-            else None,
+            "medical_report": (
+                self.medical_report.to_dict() if self.medical_report else None
+            ),
             "json_data": self.json_data,
         }
 

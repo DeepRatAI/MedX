@@ -18,7 +18,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Protocol
 
-
 # =============================================================================
 # Health Status
 # =============================================================================
@@ -288,7 +287,7 @@ class HealthRouter:
         self.start_time = start_time or time.time()
         self._health_checks: list[HealthCheckProtocol] = []
 
-    def add_check(self, check: HealthCheckProtocol) -> "HealthRouter":
+    def add_check(self, check: HealthCheckProtocol) -> HealthRouter:
         """Add a health check."""
         self._health_checks.append(check)
         return self

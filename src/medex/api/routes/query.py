@@ -14,10 +14,10 @@ from __future__ import annotations
 
 import time
 import uuid
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, AsyncGenerator
-
+from typing import Any
 
 # =============================================================================
 # Request/Response Models

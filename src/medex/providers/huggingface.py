@@ -9,10 +9,7 @@ Based on Cortex's proven implementation for 2-6s response times.
 
 from __future__ import annotations
 
-import json
-import os
 from collections.abc import Generator
-from typing import Any
 
 import httpx
 

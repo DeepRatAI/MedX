@@ -21,7 +21,6 @@ Design:
 from __future__ import annotations
 
 import logging
-from datetime import datetime
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
@@ -29,11 +28,10 @@ from .context_window import ContextWindow, ContextWindowManager
 from .conversation_manager import ConversationManager, ConversationSummary, MessageData
 from .patient_context import (
     PatientContext,
-    PatientContextExtractor,
     get_patient_context_extractor,
 )
-from .title_generator import TitleGenerator, get_title_generator
-from .token_counter import TokenCounter, get_token_counter
+from .title_generator import get_title_generator
+from .token_counter import get_token_counter
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession

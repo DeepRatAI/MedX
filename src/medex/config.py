@@ -19,7 +19,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-
 # =============================================================================
 # Environment
 # =============================================================================
@@ -69,7 +68,7 @@ class DatabaseConfig:
         return f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
 
     @classmethod
-    def from_env(cls) -> "DatabaseConfig":
+    def from_env(cls) -> DatabaseConfig:
         """Create from environment variables."""
         return cls(
             host=os.getenv("POSTGRES_HOST", "localhost"),
@@ -113,7 +112,7 @@ class RedisConfig:
         return f"redis://{auth}{self.host}:{self.port}/{self.database}"
 
     @classmethod
-    def from_env(cls) -> "RedisConfig":
+    def from_env(cls) -> RedisConfig:
         """Create from environment variables."""
         return cls(
             host=os.getenv("REDIS_HOST", "localhost"),
@@ -153,7 +152,7 @@ class QdrantConfig:
         return f"http://{self.host}:{self.port}"
 
     @classmethod
-    def from_env(cls) -> "QdrantConfig":
+    def from_env(cls) -> QdrantConfig:
         """Create from environment variables."""
         return cls(
             host=os.getenv("QDRANT_HOST", "localhost"),
@@ -206,7 +205,7 @@ class LLMConfig:
     tokens_per_minute: int = 100000
 
     @classmethod
-    def from_env(cls) -> "LLMConfig":
+    def from_env(cls) -> LLMConfig:
         """Create from environment variables."""
         providers = []
 
@@ -305,7 +304,7 @@ class EmbeddingConfig:
     cache_ttl: int = 86400  # 24 hours
 
     @classmethod
-    def from_env(cls) -> "EmbeddingConfig":
+    def from_env(cls) -> EmbeddingConfig:
         """Create from environment variables."""
         return cls(
             model_name=os.getenv(
@@ -361,7 +360,7 @@ class SecurityConfig:
     blocked_patterns: list[str] = field(default_factory=list)
 
     @classmethod
-    def from_env(cls) -> "SecurityConfig":
+    def from_env(cls) -> SecurityConfig:
         """Create from environment variables."""
         api_keys_str = os.getenv("API_KEYS", "")
         api_keys = set(api_keys_str.split(",")) if api_keys_str else set()
@@ -405,7 +404,7 @@ class APIConfig:
     enable_metrics: bool = True
 
     @classmethod
-    def from_env(cls) -> "APIConfig":
+    def from_env(cls) -> APIConfig:
         """Create from environment variables."""
         cors_origins_str = os.getenv("CORS_ORIGINS", "*")
         cors_origins = cors_origins_str.split(",")
@@ -448,7 +447,7 @@ class ObservabilityConfig:
     health_check_interval: float = 30.0
 
     @classmethod
-    def from_env(cls) -> "ObservabilityConfig":
+    def from_env(cls) -> ObservabilityConfig:
         """Create from environment variables."""
         return cls(
             log_level=os.getenv("LOG_LEVEL", "INFO"),
@@ -486,7 +485,7 @@ class MedeXConfig:
     observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
 
     @classmethod
-    def from_env(cls) -> "MedeXConfig":
+    def from_env(cls) -> MedeXConfig:
         """Create configuration from environment variables."""
         env_str = os.getenv("MEDEX_ENV", "development")
         environment = Environment(env_str)
@@ -506,7 +505,7 @@ class MedeXConfig:
         )
 
     @classmethod
-    def load_dotenv(cls, path: str | Path | None = None) -> "MedeXConfig":
+    def load_dotenv(cls, path: str | Path | None = None) -> MedeXConfig:
         """Load configuration from .env file."""
         env_path = Path(path) if path else Path(".env")
 

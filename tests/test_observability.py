@@ -21,39 +21,27 @@ from medex.observability.health import (
     HealthManagerConfig,
 )
 from medex.observability.logging import (
-    LoggingConfig,
     StructuredLogger,
-    configure_logging,
+    clear_correlation_context,
     get_logger,
     set_correlation_context,
-    clear_correlation_context,
 )
 from medex.observability.metrics import (
-    Counter,
-    Gauge,
-    Histogram,
     MetricsConfig,
     MetricsRegistry,
 )
 from medex.observability.models import (
     ComponentType,
     HealthStatus,
-    LogLevel,
-    MetricDefinition,
-    MetricType,
-    SpanKind,
-)
-from medex.observability.tracing import (
-    InMemorySpanExporter,
-    Span,
-    Tracer,
-    TracerConfig,
 )
 from medex.observability.service import (
     ObservabilityService,
     ServiceConfig,
 )
-
+from medex.observability.tracing import (
+    Tracer,
+    TracerConfig,
+)
 
 # =============================================================================
 # Fixtures

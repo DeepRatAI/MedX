@@ -16,13 +16,10 @@ Tests cover:
 
 from __future__ import annotations
 
-import asyncio
 import time
-from datetime import datetime
 from typing import Any
 
 import pytest
-
 
 # =============================================================================
 # Test Fixtures
@@ -165,7 +162,7 @@ class TestAPIModelsV2:
 
     def test_ws_message_factory_methods(self) -> None:
         """Test WSMessage factory methods."""
-        from medex.api.models import WSMessage, MessageType
+        from medex.api.models import MessageType, WSMessage
 
         # Thinking message
         msg = WSMessage.thinking("Processing...")
@@ -259,9 +256,9 @@ class TestMiddlewareV2:
     def test_security_middleware_rate_limiting(self) -> None:
         """Test SecurityMiddleware rate limiting logic."""
         from medex.api.middleware import (
-            SecurityMiddleware,
-            SecurityConfig,
             RequestContext,
+            SecurityConfig,
+            SecurityMiddleware,
         )
 
         config = SecurityConfig(rate_limit_enabled=True, rate_limit_requests=3)
@@ -293,8 +290,8 @@ class TestMiddlewareV2:
     async def test_observability_middleware_metrics(self) -> None:
         """Test ObservabilityMiddleware metrics collection."""
         from medex.api.middleware import (
-            ObservabilityMiddleware,
             ObservabilityConfig,
+            ObservabilityMiddleware,
             RequestContext,
         )
 
@@ -398,9 +395,9 @@ class TestHealthRoutesV2:
     async def test_health_router_aggregate_status(self) -> None:
         """Test health router aggregates component statuses."""
         from medex.api.routes.health import (
+            DatabaseHealthCheck,
             HealthRouter,
             HealthStatus,
-            DatabaseHealthCheck,
             RedisHealthCheck,
         )
 
@@ -473,7 +470,7 @@ class TestQueryRoutesV2:
     @pytest.mark.asyncio
     async def test_query_handler_sync_query(self) -> None:
         """Test QueryHandler synchronous query."""
-        from medex.api.routes.query import QueryHandler, MedicalQueryRequest
+        from medex.api.routes.query import MedicalQueryRequest, QueryHandler
 
         handler = QueryHandler()
         request = MedicalQueryRequest(
@@ -491,7 +488,7 @@ class TestQueryRoutesV2:
     @pytest.mark.asyncio
     async def test_query_handler_stream_query(self) -> None:
         """Test QueryHandler streaming query."""
-        from medex.api.routes.query import QueryHandler, MedicalQueryRequest
+        from medex.api.routes.query import MedicalQueryRequest, QueryHandler
 
         handler = QueryHandler()
         request = MedicalQueryRequest(
@@ -512,7 +509,7 @@ class TestQueryRoutesV2:
     @pytest.mark.asyncio
     async def test_query_handler_emergency_detection(self) -> None:
         """Test emergency detection in queries."""
-        from medex.api.routes.query import QueryHandler, MedicalQueryRequest
+        from medex.api.routes.query import MedicalQueryRequest, QueryHandler
 
         handler = QueryHandler()
 
@@ -675,8 +672,9 @@ class TestWebSocketV2:
     @pytest.mark.asyncio
     async def test_websocket_handler_ping_pong(self) -> None:
         """Test WebSocket ping/pong."""
-        from medex.api.websocket import WebSocketHandler, WSMessageType
         import json
+
+        from medex.api.websocket import WebSocketHandler, WSMessageType
 
         handler = WebSocketHandler()
         await handler.on_connect("conn-1")
@@ -691,8 +689,9 @@ class TestWebSocketV2:
     @pytest.mark.asyncio
     async def test_websocket_handler_query(self) -> None:
         """Test WebSocket query handling."""
-        from medex.api.websocket import WebSocketHandler, WSMessageType
         import json
+
+        from medex.api.websocket import WebSocketHandler, WSMessageType
 
         handler = WebSocketHandler()
         await handler.on_connect("conn-1")
@@ -768,7 +767,7 @@ class TestAppV2:
 
     def test_medex_app_creation(self) -> None:
         """Test MedeXApp creation."""
-        from medex.api.app import MedeXApp, AppConfig
+        from medex.api.app import AppConfig, MedeXApp
 
         config = AppConfig(title="Test App", version="1.0.0")
         app = MedeXApp(config=config)
@@ -821,7 +820,7 @@ class TestErrorHandlingV2:
     @pytest.mark.asyncio
     async def test_validation_error_handling(self) -> None:
         """Test validation error produces correct response."""
-        from medex.api.routes.query import QueryHandler, MedicalQueryRequest
+        from medex.api.routes.query import MedicalQueryRequest, QueryHandler
 
         handler = QueryHandler()
 

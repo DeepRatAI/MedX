@@ -11,16 +11,15 @@ Este módulo testea:
 """
 
 import pytest
-from typing import Dict, List
 
 from differential_diagnosis import (
     SYMPTOM_DIFFERENTIALS,
-    DifferentialDiagnosis,
     DiagnosticTest,
+    DifferentialDiagnosis,
     Urgency,
-    get_differential_for_symptom,
-    get_available_symptoms,
     format_differential_report,
+    get_available_symptoms,
+    get_differential_for_symptom,
 )
 
 
@@ -30,9 +29,9 @@ class TestSymptomCoverage:
     def test_minimum_25_symptoms_available(self):
         """Verifica que hay al menos 25 síntomas configurados."""
         symptoms = get_available_symptoms()
-        assert len(symptoms) >= 25, (
-            f"Se esperan ≥25 síntomas, encontrados: {len(symptoms)}"
-        )
+        assert (
+            len(symptoms) >= 25
+        ), f"Se esperan ≥25 síntomas, encontrados: {len(symptoms)}"
 
     def test_critical_symptoms_present(self):
         """Verifica que los síntomas críticos/cardinales están presentes."""
@@ -52,9 +51,9 @@ class TestSymptomCoverage:
         """Verifica que todos los síntomas tienen diagnósticos diferenciales."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             assert "differentials" in data, f"{symptom}: falta 'differentials'"
-            assert len(data["differentials"]) >= 2, (
-                f"{symptom}: necesita ≥2 diferenciales"
-            )
+            assert (
+                len(data["differentials"]) >= 2
+            ), f"{symptom}: necesita ≥2 diferenciales"
 
 
 class TestDataStructure:
@@ -72,44 +71,46 @@ class TestDataStructure:
         """Verifica estructura de DifferentialDiagnosis."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             for dx in data["differentials"]:
-                assert isinstance(dx, DifferentialDiagnosis), (
-                    f"{symptom}: diferencial no es DifferentialDiagnosis"
-                )
+                assert isinstance(
+                    dx, DifferentialDiagnosis
+                ), f"{symptom}: diferencial no es DifferentialDiagnosis"
 
                 # Verificar campos requeridos
                 assert dx.icd10_code, f"{symptom}/{dx.name}: falta icd10_code"
                 assert dx.name, f"{symptom}: diferencial sin nombre"
                 assert dx.probability, f"{symptom}/{dx.name}: falta probability"
-                assert isinstance(dx.key_features, list), (
-                    f"{symptom}/{dx.name}: key_features debe ser lista"
-                )
-                assert isinstance(dx.tests, list), (
-                    f"{symptom}/{dx.name}: tests debe ser lista"
-                )
-                assert isinstance(dx.urgency, Urgency), (
-                    f"{symptom}/{dx.name}: urgency debe ser Urgency enum"
-                )
+                assert isinstance(
+                    dx.key_features, list
+                ), f"{symptom}/{dx.name}: key_features debe ser lista"
+                assert isinstance(
+                    dx.tests, list
+                ), f"{symptom}/{dx.name}: tests debe ser lista"
+                assert isinstance(
+                    dx.urgency, Urgency
+                ), f"{symptom}/{dx.name}: urgency debe ser Urgency enum"
 
     def test_diagnostic_test_structure(self):
         """Verifica estructura de DiagnosticTest."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             for dx in data["differentials"]:
                 for test in dx.tests:
-                    assert isinstance(test, DiagnosticTest), (
-                        f"{symptom}/{dx.name}: test no es DiagnosticTest"
-                    )
+                    assert isinstance(
+                        test, DiagnosticTest
+                    ), f"{symptom}/{dx.name}: test no es DiagnosticTest"
                     assert test.name, f"{symptom}/{dx.name}: test sin nombre"
                     assert test.category, f"{symptom}/{dx.name}: test sin categoría"
-                    assert test.priority in [1, 2, 3], (
-                        f"{symptom}/{dx.name}: test priority debe ser 1, 2 o 3"
-                    )
+                    assert test.priority in [
+                        1,
+                        2,
+                        3,
+                    ], f"{symptom}/{dx.name}: test priority debe ser 1, 2 o 3"
 
     def test_key_questions_not_empty(self):
         """Verifica que cada síntoma tiene preguntas clave."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
-            assert len(data["key_questions"]) >= 3, (
-                f"{symptom}: necesita ≥3 preguntas clave"
-            )
+            assert (
+                len(data["key_questions"]) >= 3
+            ), f"{symptom}: necesita ≥3 preguntas clave"
 
 
 class TestICD10Codes:
@@ -124,17 +125,17 @@ class TestICD10Codes:
 
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             for dx in data["differentials"]:
-                assert icd10_pattern.match(dx.icd10_code), (
-                    f"{symptom}/{dx.name}: código ICD-10 inválido: {dx.icd10_code}"
-                )
+                assert icd10_pattern.match(
+                    dx.icd10_code
+                ), f"{symptom}/{dx.name}: código ICD-10 inválido: {dx.icd10_code}"
 
     def test_no_duplicate_icd10_per_symptom(self):
         """Verifica que no hay códigos ICD-10 duplicados por síntoma."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             codes = [dx.icd10_code for dx in data["differentials"]]
-            assert len(codes) == len(set(codes)), (
-                f"{symptom}: tiene códigos ICD-10 duplicados"
-            )
+            assert len(codes) == len(
+                set(codes)
+            ), f"{symptom}: tiene códigos ICD-10 duplicados"
 
 
 class TestUrgencyLevels:
@@ -153,18 +154,18 @@ class TestUrgencyLevels:
             Urgency.SEMI_URGENT,
             Urgency.ELECTIVE,
         }
-        assert all_urgencies == expected, (
-            f"No se usan todos los niveles de urgencia. Usados: {all_urgencies}"
-        )
+        assert (
+            all_urgencies == expected
+        ), f"No se usan todos los niveles de urgencia. Usados: {all_urgencies}"
 
     def test_emergent_has_red_flags(self):
         """Verifica que diagnósticos emergentes tienen red flags."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             for dx in data["differentials"]:
                 if dx.urgency == Urgency.EMERGENT:
-                    assert dx.red_flags and len(dx.red_flags) > 0, (
-                        f"{symptom}/{dx.name}: EMERGENT debe tener red_flags"
-                    )
+                    assert (
+                        dx.red_flags and len(dx.red_flags) > 0
+                    ), f"{symptom}/{dx.name}: EMERGENT debe tener red_flags"
 
 
 class TestSymptomSearch:
@@ -243,9 +244,9 @@ class TestReportFormatting:
         ]
 
         for content in expected_content:
-            assert content.upper() in report.upper() or content in report, (
-                f"Reporte no contiene: {content}"
-            )
+            assert (
+                content.upper() in report.upper() or content in report
+            ), f"Reporte no contiene: {content}"
 
     def test_report_includes_all_differentials(self):
         """Verifica que el reporte incluye todos los diferenciales."""
@@ -298,20 +299,20 @@ class TestClinicalCompleteness:
         """Verifica que cada diferencial tiene mínimo de características."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             for dx in data["differentials"]:
-                assert len(dx.key_features) >= 3, (
-                    f"{symptom}/{dx.name}: necesita ≥3 key_features"
-                )
-                assert len(dx.against_features) >= 1, (
-                    f"{symptom}/{dx.name}: necesita ≥1 against_features"
-                )
+                assert (
+                    len(dx.key_features) >= 3
+                ), f"{symptom}/{dx.name}: necesita ≥3 key_features"
+                assert (
+                    len(dx.against_features) >= 1
+                ), f"{symptom}/{dx.name}: necesita ≥1 against_features"
 
     def test_each_differential_has_tests(self):
         """Verifica que cada diferencial tiene tests diagnósticos."""
         for symptom, data in SYMPTOM_DIFFERENTIALS.items():
             for dx in data["differentials"]:
-                assert len(dx.tests) >= 1, (
-                    f"{symptom}/{dx.name}: necesita ≥1 test diagnóstico"
-                )
+                assert (
+                    len(dx.tests) >= 1
+                ), f"{symptom}/{dx.name}: necesita ≥1 test diagnóstico"
 
     def test_probability_statements_present(self):
         """Verifica que hay declaraciones de probabilidad."""
@@ -343,9 +344,9 @@ class TestIntegration:
         dx_names = [dx.name for dx in data["differentials"]]
         critical_diagnoses = ["Síndrome Coronario Agudo", "Embolia Pulmonar"]
         for critical in critical_diagnoses:
-            assert any(critical in name for name in dx_names), (
-                f"Falta diagnóstico crítico: {critical}"
-            )
+            assert any(
+                critical in name for name in dx_names
+            ), f"Falta diagnóstico crítico: {critical}"
 
         # 5. Generar reporte
         report = format_differential_report("dolor torácico", data)

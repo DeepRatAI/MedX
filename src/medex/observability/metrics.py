@@ -18,10 +18,9 @@ import threading
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 from medex.observability.models import MetricDefinition, MetricType, MetricValue
-
 
 logger = logging.getLogger(__name__)
 
@@ -169,7 +168,7 @@ class Histogram:
         with self._lock:
             if label_key not in self._data:
                 self._data[label_key] = {
-                    "buckets": {b: 0 for b in self.buckets},
+                    "buckets": dict.fromkeys(self.buckets, 0),
                     "sum": 0.0,
                     "count": 0,
                 }
@@ -182,7 +181,7 @@ class Histogram:
                 if value <= bucket:
                     data["buckets"][bucket] += 1
 
-    def time(self, labels: dict[str, str] | None = None) -> "HistogramTimer":
+    def time(self, labels: dict[str, str] | None = None) -> HistogramTimer:
         """Context manager for timing operations."""
         return HistogramTimer(self, labels)
 
@@ -244,7 +243,7 @@ class HistogramTimer:
         self._labels = labels
         self._start: float | None = None
 
-    def __enter__(self) -> "HistogramTimer":
+    def __enter__(self) -> HistogramTimer:
         """Start timing."""
         self._start = time.perf_counter()
         return self

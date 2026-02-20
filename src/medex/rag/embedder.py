@@ -28,7 +28,7 @@ import asyncio
 import hashlib
 import logging
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -343,6 +343,7 @@ class OpenAIEmbedder(BaseEmbedder):
         """Lazy-load OpenAI client."""
         if self._client is None:
             import os
+
             from openai import AsyncOpenAI
 
             api_key = self._api_key or os.getenv("OPENAI_API_KEY")

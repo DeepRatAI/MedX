@@ -25,10 +25,8 @@ from medex.security.models import (
     PIIDetectionResult,
     RiskLevel,
     SanitizationResult,
-    SecurityConfig,
 )
 from medex.security.pii import (
-    MedicalPIIDetector,
     PIIDetector,
     PIIDetectorConfig,
     create_pii_detector,
@@ -40,7 +38,6 @@ from medex.security.sanitizer import (
     create_input_sanitizer,
     create_medical_validator,
 )
-
 
 logger = logging.getLogger(__name__)
 

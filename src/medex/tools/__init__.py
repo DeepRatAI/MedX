@@ -39,6 +39,22 @@ Usage:
 """
 
 from .executor import ToolExecutor, create_tool_executor
+
+# Re-export medical tools
+from .medical import (
+    adjust_dose_renal,
+    calculate_bsa,
+    calculate_creatinine_clearance,
+    calculate_pediatric_dose,
+    check_critical_values,
+    check_drug_interactions,
+    detect_emergency,
+    get_drug_info,
+    interpret_cbc,
+    interpret_liver_panel,
+    interpret_thyroid_panel,
+    quick_triage,
+)
 from .models import (
     ParameterType,
     ToolCall,
@@ -60,22 +76,6 @@ from .registry import (
     object_param,
     string_param,
     tool,
-)
-
-# Re-export medical tools
-from .medical import (
-    adjust_dose_renal,
-    calculate_bsa,
-    calculate_creatinine_clearance,
-    calculate_pediatric_dose,
-    check_critical_values,
-    check_drug_interactions,
-    detect_emergency,
-    get_drug_info,
-    interpret_cbc,
-    interpret_liver_panel,
-    interpret_thyroid_panel,
-    quick_triage,
 )
 
 __all__ = [

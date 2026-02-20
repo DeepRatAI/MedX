@@ -25,14 +25,12 @@ from medex.medical.models import (
     ConsultationType,
     DiagnosticHypothesis,
     DiagnosticPlan,
-    EvidenceLevel,
     Medication,
     TreatmentPlan,
     TriageAssessment,
     TriageLevel,
     UrgencyLevel,
 )
-
 
 logger = logging.getLogger(__name__)
 

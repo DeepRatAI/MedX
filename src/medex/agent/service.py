@@ -16,20 +16,19 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, AsyncIterator
+from typing import Any
 
+from medex.agent.controller import (
+    AgentControllerConfig,
+    create_agent_controller,
+)
 from medex.agent.models import (
     AgentEvent,
     AgentResult,
 )
-from medex.agent.controller import (
-    AgentController,
-    AgentControllerConfig,
-    create_agent_controller,
-)
-
 
 logger = logging.getLogger(__name__)
 
@@ -132,9 +131,9 @@ class ServiceMetrics:
                 else 0.0
             ),
             "avg_latency_ms": self.avg_latency_ms,
-            "min_latency_ms": self.min_latency_ms
-            if self.min_latency_ms != float("inf")
-            else 0,
+            "min_latency_ms": (
+                self.min_latency_ms if self.min_latency_ms != float("inf") else 0
+            ),
             "max_latency_ms": self.max_latency_ms,
             "active_queries": self.active_queries,
             "peak_concurrent": self.peak_concurrent,

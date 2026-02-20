@@ -19,7 +19,6 @@ import logging
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
 
 from medex.security.models import (
     RiskLevel,
@@ -27,7 +26,6 @@ from medex.security.models import (
     SanitizationType,
     ThreatDetection,
 )
-
 
 logger = logging.getLogger(__name__)
 

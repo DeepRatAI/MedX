@@ -5,26 +5,23 @@ Tests para MedeX Clinical Logger
 Suite de tests para el sistema de logging clínico estructurado.
 """
 
-import pytest
 import json
-import os
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
-from datetime import datetime, timezone
-from unittest.mock import patch
+
+import pytest
 
 from medex_logger import (
-    MedeXLogger,
-    ClinicalLogEntry,
-    AuditTrailEntry,
-    LogLevel,
-    EventType,
     PII_PATTERNS,
+    AuditTrailEntry,
+    ClinicalLogEntry,
+    EventType,
+    LogLevel,
+    MedeXLogger,
     get_logger,
     reset_logger,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -539,7 +536,7 @@ class TestIntegration:
         clinical_logs = list(Path(temp_log_dir).glob("medex_clinical_*.log"))
         assert len(clinical_logs) > 0
 
-        with open(clinical_logs[0], "r", encoding="utf-8") as f:
+        with open(clinical_logs[0], encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     # Cada línea debe ser JSON válido

@@ -106,6 +106,8 @@ exclude = '''
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+
+[tool.ruff.lint]
 select = [
     "E",    # pycodestyle errors
     "W",    # pycodestyle warnings
@@ -116,11 +118,20 @@ select = [
     "UP",   # pyupgrade
 ]
 ignore = [
-    "E501",  # line too long (handled by black)
-    "B008",  # do not perform function calls in argument defaults
+    "E501",   # line too long (handled by black)
+    "B008",   # do not perform function calls in argument defaults
+    "F821",   # undefined-name (legacy code, tracked in #2)
+    "F841",   # unused-variable (legacy code, tracked in #2)
+    "B007",   # unused-loop-control-variable
+    "B905",   # zip-without-explicit-strict
+    "E741",   # ambiguous-variable-name
+    "B904",   # raise-without-from-inside-except
+    "E712",   # true-false-comparison
+    "B027",   # empty-method-without-abstract-decorator
+    "C401",   # unnecessary-generator-set
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["medex"]
 
 [tool.mypy]

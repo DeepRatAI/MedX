@@ -15,15 +15,13 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Any
 
-from .app import AppConfig, AppState, MedeXApp, create_app
-from .routes.admin import AdminHandler, create_admin_handler
-from .routes.health import HealthRouter, create_health_router
-from .routes.query import QueryHandler, create_query_handler
-from .websocket import ConnectionManager, WebSocketHandler, create_connection_manager
-
+from .app import AppConfig, create_app
+from .routes.admin import create_admin_handler
+from .routes.health import create_health_router
+from .routes.query import create_query_handler
+from .websocket import ConnectionManager, create_connection_manager
 
 # =============================================================================
 # API Service Configuration
@@ -160,7 +158,7 @@ class APIService:
             response = await self._query_handler.query(request)
             self._total_queries += 1
             return response
-        except Exception as e:
+        except Exception:
             self._total_errors += 1
             raise
 
@@ -178,7 +176,7 @@ class APIService:
             async for chunk in self._query_handler.stream(request):
                 yield chunk
             self._total_queries += 1
-        except Exception as e:
+        except Exception:
             self._total_errors += 1
             raise
 

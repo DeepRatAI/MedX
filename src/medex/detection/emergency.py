@@ -10,7 +10,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Set
 
 
 class EmergencyLevel(Enum):
@@ -34,7 +33,7 @@ class EmergencyResult:
 
     is_emergency: bool
     level: EmergencyLevel
-    matched_keywords: List[str]
+    matched_keywords: list[str]
     category: str
 
 
@@ -47,7 +46,7 @@ class EmergencyDetector:
     """
 
     # Critical emergencies - immediate life threat
-    CRITICAL_KEYWORDS: Set[str] = {
+    CRITICAL_KEYWORDS: set[str] = {
         # Cardiac
         "dolor precordial",
         "dolor torácico",
@@ -99,7 +98,7 @@ class EmergencyDetector:
     }
 
     # Urgent conditions - require prompt attention
-    URGENT_KEYWORDS: Set[str] = {
+    URGENT_KEYWORDS: set[str] = {
         # Pain
         "dolor intenso",
         "dolor severo",
@@ -168,7 +167,7 @@ class EmergencyDetector:
         }
 
     @staticmethod
-    def _build_pattern(keywords: Set[str]) -> re.Pattern:
+    def _build_pattern(keywords: set[str]) -> re.Pattern:
         """Build regex pattern from keyword set.
 
         Args:
@@ -192,7 +191,7 @@ class EmergencyDetector:
             EmergencyResult with detection details
         """
         query_lower = query.lower()
-        matched_keywords: List[str] = []
+        matched_keywords: list[str] = []
 
         # Check for critical emergencies first
         critical_matches = self._critical_pattern.findall(query_lower)

@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from collections.abc import Generator
+from dataclasses import dataclass
 from enum import Enum
-from typing import Generator, Optional
 
 
 class ProviderStatus(Enum):
@@ -52,7 +52,7 @@ class ProviderConfig:
     is_free: bool = False
     description: str = ""
 
-    def get_api_key(self) -> Optional[str]:
+    def get_api_key(self) -> str | None:
         """Retrieve API key from environment or file."""
         # Try environment first
         if self.api_key_env:
@@ -63,7 +63,7 @@ class ProviderConfig:
         # Try file fallback
         if self.api_key_file:
             try:
-                with open(self.api_key_file, "r") as f:
+                with open(self.api_key_file) as f:
                     return f.read().strip()
             except FileNotFoundError:
                 pass
@@ -89,7 +89,7 @@ class ProviderResponse:
     model: str = ""
     status: ProviderStatus = ProviderStatus.AVAILABLE
     tokens_used: int = 0
-    error: Optional[str] = None
+    error: str | None = None
 
     @property
     def success(self) -> bool:
@@ -144,8 +144,8 @@ class ModelProvider(ABC):
         self,
         messages: list[dict],
         system_prompt: str = "",
-        max_tokens: Optional[int] = None,
-        temperature: Optional[float] = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
     ) -> ProviderResponse:
         """Generate a response from the model.
 
@@ -165,8 +165,8 @@ class ModelProvider(ABC):
         self,
         messages: list[dict],
         system_prompt: str = "",
-        max_tokens: Optional[int] = None,
-        temperature: Optional[float] = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
     ) -> Generator[str, None, ProviderResponse]:
         """Stream a response from the model.
 

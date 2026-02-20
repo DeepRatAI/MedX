@@ -1,0 +1,59 @@
+name: MedX Online Canary
+
+on:
+  schedule:
+    - cron: "0 6 */2 * *"   # Every 48h at 06:00 UTC
+  workflow_dispatch:          # Manual trigger
+
+permissions:
+  contents: read
+
+env:
+  MEDEX_ENV: test
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  canary:
+    name: Online Canary — End-to-End
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn pydantic pydantic-settings python-dotenv
+          pip install aiohttp httpx requests websockets anyio markdown
+          pip install sqlalchemy alembic asyncpg psycopg2-binary redis qdrant-client
+          pip install scikit-learn numpy scipy pandas Pillow
+          pip install huggingface-hub openai sentence-transformers
+          pip install pytest pytest-asyncio pytest-mock
+          pip install -e . --no-deps
+
+      - name: Run canary checks
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python scripts/canary_check.py
+
+      - name: Upload canary report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canary-report-${{ github.run_id }}
+          path: canary_report/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f canary_report/summary.md ]; then
+            cat canary_report/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -10,7 +10,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Optional, List
 
 
 class ImagingModality(Enum):
@@ -92,7 +91,7 @@ class ImageAnalyzer:
                 is_valid=False,
                 modality=ImagingModality.UNKNOWN,
                 confidence=0.0,
-                message=f"File too large. Maximum size: 50MB",
+                message="File too large. Maximum size: 50MB",
             )
 
         # Image is valid - modality detection happens via AI
@@ -104,7 +103,7 @@ class ImageAnalyzer:
         )
 
     @staticmethod
-    def get_supported_modalities() -> List[str]:
+    def get_supported_modalities() -> list[str]:
         """Get list of supported imaging modalities.
 
         Returns:

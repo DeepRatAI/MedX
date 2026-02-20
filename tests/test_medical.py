@@ -14,8 +14,12 @@ Tests:
 """
 
 import pytest
-from datetime import datetime
 
+from medex.medical.formatter import (
+    ClinicalFormatter,
+    FormatterConfig,
+    create_clinical_formatter,
+)
 from medex.medical.models import (
     CIE10Code,
     ClinicalCase,
@@ -23,11 +27,9 @@ from medex.medical.models import (
     ConsultationType,
     DiagnosticHypothesis,
     DiagnosticPlan,
-    EvidenceLevel,
     LabValue,
     Medication,
     PatientProfile,
-    RecommendationGrade,
     Specialty,
     Symptom,
     TreatmentPlan,
@@ -36,28 +38,20 @@ from medex.medical.models import (
     UrgencyLevel,
     VitalSigns,
 )
-from medex.medical.triage import TriageEngine, TriageEngineConfig, create_triage_engine
 from medex.medical.reasoner import (
     DiagnosticReasoner,
     DiagnosticReasonerConfig,
     create_diagnostic_reasoner,
 )
-from medex.medical.treatment import (
-    TreatmentPlanner,
-    TreatmentPlannerConfig,
-    create_treatment_planner,
-)
-from medex.medical.formatter import (
-    ClinicalFormatter,
-    FormatterConfig,
-    create_clinical_formatter,
-)
 from medex.medical.service import (
     MedicalService,
-    MedicalServiceConfig,
     create_medical_service,
 )
-
+from medex.medical.treatment import (
+    TreatmentPlanner,
+    create_treatment_planner,
+)
+from medex.medical.triage import TriageEngine, create_triage_engine
 
 # =============================================================================
 # Test Fixtures

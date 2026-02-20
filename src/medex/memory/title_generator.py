@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -169,7 +168,7 @@ class TitleGenerator:
 
         return text
 
-    def _try_pattern_match(self, message: str) -> Optional[str]:
+    def _try_pattern_match(self, message: str) -> str | None:
         """Try to match message against question patterns."""
         for pattern, template in self._compiled_patterns:
             match = pattern.match(message)
@@ -180,7 +179,7 @@ class TitleGenerator:
                 return template.format(captured)
         return None
 
-    def _try_medical_keywords(self, message: str) -> Optional[str]:
+    def _try_medical_keywords(self, message: str) -> str | None:
         """Detect medical keywords and generate appropriate title."""
         message_lower = message.lower()
 
@@ -292,7 +291,7 @@ Título:"""
 # Singleton Instance
 # =============================================================================
 
-_generator: Optional[TitleGenerator] = None
+_generator: TitleGenerator | None = None
 
 
 def get_title_generator() -> TitleGenerator:

@@ -6,7 +6,7 @@ Provider implementation for Moonshot AI's Kimi K2 model.
 
 from __future__ import annotations
 
-from typing import Generator, Optional
+from collections.abc import Generator
 
 from medex.providers.base import (
     ModelProvider,
@@ -14,7 +14,6 @@ from medex.providers.base import (
     ProviderResponse,
     ProviderStatus,
 )
-
 
 # Default Moonshot configuration
 MOONSHOT_CONFIG = ProviderConfig(
@@ -35,7 +34,7 @@ MOONSHOT_CONFIG = ProviderConfig(
 class MoonshotProvider(ModelProvider):
     """Moonshot AI (Kimi K2) provider implementation."""
 
-    def __init__(self, config: Optional[ProviderConfig] = None) -> None:
+    def __init__(self, config: ProviderConfig | None = None) -> None:
         """Initialize Moonshot provider.
 
         Args:
@@ -75,8 +74,8 @@ class MoonshotProvider(ModelProvider):
         self,
         messages: list[dict],
         system_prompt: str = "",
-        max_tokens: Optional[int] = None,
-        temperature: Optional[float] = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
     ) -> ProviderResponse:
         """Generate a response using Moonshot API.
 
@@ -137,8 +136,8 @@ class MoonshotProvider(ModelProvider):
         self,
         messages: list[dict],
         system_prompt: str = "",
-        max_tokens: Optional[int] = None,
-        temperature: Optional[float] = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
     ) -> Generator[str, None, ProviderResponse]:
         """Stream a response using Moonshot API.
 

@@ -16,9 +16,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Callable
+from typing import Any
 
 from medex.agent.models import (
     AgentContext,
@@ -28,7 +29,6 @@ from medex.agent.models import (
     AgentResult,
     AgentState,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -337,9 +337,9 @@ class StateManager:
         return AgentResult(
             content=self._state.response_buffer,
             success=not self._state.errors,
-            intent_type=context.intent.intent_type
-            if context and context.intent
-            else None,
+            intent_type=(
+                context.intent.intent_type if context and context.intent else None
+            ),
             urgency=context.intent.urgency if context and context.intent else None,
             sources=sources,
             tools_used=tools_used,

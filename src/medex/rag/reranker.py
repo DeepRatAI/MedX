@@ -30,8 +30,7 @@ import math
 import re
 from abc import ABC, abstractmethod
 from collections import Counter
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 from .models import RelevanceLevel, SearchResult
 

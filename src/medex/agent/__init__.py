@@ -70,40 +70,6 @@ Features:
 - Streaming responses with SSE support
 """
 
-from medex.agent.models import (
-    # Enums
-    ActionType,
-    AgentPhase,
-    IntentType,
-    PlanStatus,
-    UrgencyLevel,
-    # Data classes
-    AgentAction,
-    AgentContext,
-    AgentEvent,
-    AgentPlan,
-    AgentResult,
-    AgentState,
-    UserIntent,
-)
-
-from medex.agent.state import (
-    StateManager,
-    StateManagerConfig,
-    StateSnapshot,
-    VALID_TRANSITIONS,
-    create_state_manager,
-    get_state_manager,
-)
-
-from medex.agent.planner import (
-    PlanBuilder,
-    PlanExecutor,
-    PlanExecutorConfig,
-    create_plan_builder,
-    create_plan_executor,
-)
-
 from medex.agent.controller import (
     AgentController,
     AgentControllerConfig,
@@ -111,7 +77,27 @@ from medex.agent.controller import (
     ResponseGenerator,
     create_agent_controller,
 )
-
+from medex.agent.models import (  # Enums; Data classes
+    ActionType,
+    AgentAction,
+    AgentContext,
+    AgentEvent,
+    AgentPhase,
+    AgentPlan,
+    AgentResult,
+    AgentState,
+    IntentType,
+    PlanStatus,
+    UrgencyLevel,
+    UserIntent,
+)
+from medex.agent.planner import (
+    PlanBuilder,
+    PlanExecutor,
+    PlanExecutorConfig,
+    create_plan_builder,
+    create_plan_executor,
+)
 from medex.agent.service import (
     AgentService,
     AgentServiceConfig,
@@ -119,7 +105,14 @@ from medex.agent.service import (
     create_agent_service,
     get_agent_service,
 )
-
+from medex.agent.state import (
+    VALID_TRANSITIONS,
+    StateManager,
+    StateManagerConfig,
+    StateSnapshot,
+    create_state_manager,
+    get_state_manager,
+)
 
 # =============================================================================
 # Module Exports

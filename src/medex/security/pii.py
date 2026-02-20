@@ -28,7 +28,6 @@ from medex.security.models import (
     RiskLevel,
 )
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -483,9 +482,11 @@ class MedicalPIIDetector(PIIDetector):
 
                 entities.append(
                     PIIEntity(
-                        type=PIIType.FULL_NAME
-                        if "name" in pattern_name
-                        else PIIType.MEDICAL_RECORD_NUMBER,
+                        type=(
+                            PIIType.FULL_NAME
+                            if "name" in pattern_name
+                            else PIIType.MEDICAL_RECORD_NUMBER
+                        ),
                         value=value,
                         start_pos=start_pos,
                         end_pos=end_pos,

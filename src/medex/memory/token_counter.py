@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Optional
 from functools import lru_cache
 
 logger = logging.getLogger(__name__)
@@ -142,7 +141,7 @@ class TokenCounter:
         self,
         role: str,
         content: str,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> int:
         """
         Count tokens for a chat message including overhead.
@@ -257,7 +256,7 @@ class TokenCounter:
 # Singleton Instance
 # =============================================================================
 
-_default_counter: Optional[TokenCounter] = None
+_default_counter: TokenCounter | None = None
 
 
 def get_token_counter(model: str = "kimi-k2") -> TokenCounter:

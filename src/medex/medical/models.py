@@ -19,7 +19,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-
 # =============================================================================
 # Enums
 # =============================================================================
@@ -183,9 +182,11 @@ class VitalSigns:
         """Convert to dictionary."""
         return {
             "heart_rate": self.heart_rate,
-            "blood_pressure": f"{self.blood_pressure_systolic}/{self.blood_pressure_diastolic}"
-            if self.blood_pressure_systolic
-            else None,
+            "blood_pressure": (
+                f"{self.blood_pressure_systolic}/{self.blood_pressure_diastolic}"
+                if self.blood_pressure_systolic
+                else None
+            ),
             "respiratory_rate": self.respiratory_rate,
             "temperature": self.temperature,
             "oxygen_saturation": self.oxygen_saturation,
@@ -242,9 +243,11 @@ class LabValue:
             "name": self.name,
             "value": self.value,
             "unit": self.unit,
-            "reference_range": f"{self.reference_min}-{self.reference_max}"
-            if self.reference_min
-            else None,
+            "reference_range": (
+                f"{self.reference_min}-{self.reference_max}"
+                if self.reference_min
+                else None
+            ),
             "interpretation": self.interpretation,
             "is_critical": self.is_critical,
         }
@@ -322,9 +325,9 @@ class Medication:
             "duration": self.duration,
             "indication": self.indication,
             "contraindications": self.contraindications,
-            "evidence_level": self.evidence_level.value
-            if self.evidence_level
-            else None,
+            "evidence_level": (
+                self.evidence_level.value if self.evidence_level else None
+            ),
         }
 
 
@@ -559,13 +562,13 @@ class ClinicalCase:
             "differential_diagnosis": [
                 d.to_dict() for d in self.differential_diagnosis
             ],
-            "primary_diagnosis": self.primary_diagnosis.to_dict()
-            if self.primary_diagnosis
-            else None,
+            "primary_diagnosis": (
+                self.primary_diagnosis.to_dict() if self.primary_diagnosis else None
+            ),
             "diagnostic_plan": [d.to_dict() for d in self.diagnostic_plan],
-            "treatment_plan": self.treatment_plan.to_dict()
-            if self.treatment_plan
-            else None,
+            "treatment_plan": (
+                self.treatment_plan.to_dict() if self.treatment_plan else None
+            ),
             "admission_criteria": self.admission_criteria,
             "prognosis": self.prognosis,
             "specialty": self.specialty.value if self.specialty else None,

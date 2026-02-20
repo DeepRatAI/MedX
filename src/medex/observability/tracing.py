@@ -18,14 +18,13 @@ import contextvars
 import functools
 import logging
 import secrets
-import time
+from collections.abc import AsyncGenerator, Generator
 from contextlib import asynccontextmanager, contextmanager
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, AsyncGenerator, Generator
+from typing import Any
 
-from medex.observability.models import SpanContext, SpanData, SpanEvent, SpanKind
-
+from medex.observability.models import SpanContext, SpanData, SpanKind
 
 logger = logging.getLogger(__name__)
 
@@ -142,12 +141,12 @@ class Span:
         """Get span duration in milliseconds."""
         return self._data.duration_ms
 
-    def set_attribute(self, key: str, value: Any) -> "Span":
+    def set_attribute(self, key: str, value: Any) -> Span:
         """Set span attribute."""
         self._data.attributes[key] = value
         return self
 
-    def set_attributes(self, attributes: dict[str, Any]) -> "Span":
+    def set_attributes(self, attributes: dict[str, Any]) -> Span:
         """Set multiple span attributes."""
         self._data.attributes.update(attributes)
         return self
@@ -156,19 +155,19 @@ class Span:
         self,
         name: str,
         attributes: dict[str, Any] | None = None,
-    ) -> "Span":
+    ) -> Span:
         """Add event to span."""
         self._data.add_event(name, attributes)
         return self
 
-    def set_status(self, status: str, message: str | None = None) -> "Span":
+    def set_status(self, status: str, message: str | None = None) -> Span:
         """Set span status."""
         self._data.status_code = status
         if message:
             self._data.status_message = message
         return self
 
-    def set_error(self, error: Exception | str) -> "Span":
+    def set_error(self, error: Exception | str) -> Span:
         """Mark span as error."""
         if isinstance(error, Exception):
             self._data.set_error(f"{type(error).__name__}: {str(error)}")
@@ -183,7 +182,7 @@ class Span:
             self._data.set_error(error)
         return self
 
-    def start(self) -> "Span":
+    def start(self) -> Span:
         """Start the span and set as current."""
         self._token = _current_span.set(self._data)
         return self
@@ -205,7 +204,7 @@ class Span:
         if tracer:
             tracer._export_span(self._data)
 
-    def __enter__(self) -> "Span":
+    def __enter__(self) -> Span:
         """Enter context manager."""
         return self.start()
 
@@ -215,7 +214,7 @@ class Span:
             self.set_error(exc_val)
         self.end()
 
-    async def __aenter__(self) -> "Span":
+    async def __aenter__(self) -> Span:
         """Enter async context manager."""
         return self.start()
 

@@ -15,13 +15,11 @@ from __future__ import annotations
 
 import asyncio
 import json
-import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any
-
 
 # =============================================================================
 # WebSocket Message Types
@@ -82,7 +80,7 @@ class WSMessage:
         )
 
     @classmethod
-    def from_json(cls, json_str: str) -> "WSMessage":
+    def from_json(cls, json_str: str) -> WSMessage:
         """Parse from JSON string."""
         data = json.loads(json_str)
         return cls(
@@ -92,12 +90,12 @@ class WSMessage:
 
     # Factory methods
     @classmethod
-    def thinking(cls, message: str = "Analizando consulta...") -> "WSMessage":
+    def thinking(cls, message: str = "Analizando consulta...") -> WSMessage:
         """Create thinking message."""
         return cls(type=WSMessageType.THINKING, data={"message": message})
 
     @classmethod
-    def streaming(cls, chunk: str, token_count: int = 0) -> "WSMessage":
+    def streaming(cls, chunk: str, token_count: int = 0) -> WSMessage:
         """Create streaming chunk message."""
         return cls(
             type=WSMessageType.STREAMING,
@@ -113,7 +111,7 @@ class WSMessage:
         tool_name: str,
         status: str = "executing",
         result: Any | None = None,
-    ) -> "WSMessage":
+    ) -> WSMessage:
         """Create tool call message."""
         return cls(
             type=WSMessageType.TOOL_CALL,
@@ -125,7 +123,7 @@ class WSMessage:
         )
 
     @classmethod
-    def rag_search(cls, query: str, results_count: int = 0) -> "WSMessage":
+    def rag_search(cls, query: str, results_count: int = 0) -> WSMessage:
         """Create RAG search message."""
         return cls(
             type=WSMessageType.RAG_SEARCH,
@@ -142,7 +140,7 @@ class WSMessage:
         response: str,
         sources: list[dict] | None = None,
         tokens_used: int = 0,
-    ) -> "WSMessage":
+    ) -> WSMessage:
         """Create completion message."""
         return cls(
             type=WSMessageType.COMPLETE,
@@ -155,7 +153,7 @@ class WSMessage:
         )
 
     @classmethod
-    def error(cls, code: str, message: str, details: dict | None = None) -> "WSMessage":
+    def error(cls, code: str, message: str, details: dict | None = None) -> WSMessage:
         """Create error message."""
         return cls(
             type=WSMessageType.ERROR,

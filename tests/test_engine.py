@@ -2,8 +2,9 @@
 Tests for MedeX core engine.
 """
 
+from unittest.mock import Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 from medex.core.config import MedeXConfig
 from medex.core.prompts import SystemPrompts
@@ -157,8 +158,9 @@ class TestMedeXEngineInitialization:
             engine = MedeXEngine()
 
             # Manually add an entry
-            from medex.core.engine import ConversationEntry
             from datetime import datetime
+
+            from medex.core.engine import ConversationEntry
 
             engine.conversation_history.append(
                 ConversationEntry(

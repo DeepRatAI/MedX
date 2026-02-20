@@ -18,7 +18,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-
 # =============================================================================
 # Enums
 # =============================================================================
@@ -215,9 +214,9 @@ class QueryResponse:
             "triage_level": self.triage_level,
             "sources": self.sources,
             "created_at": self.created_at.isoformat(),
-            "completed_at": self.completed_at.isoformat()
-            if self.completed_at
-            else None,
+            "completed_at": (
+                self.completed_at.isoformat() if self.completed_at else None
+            ),
             "duration_ms": self.duration_ms,
             "tokens_used": self.tokens_used,
             "model_used": self.model_used,
@@ -284,7 +283,7 @@ class WSMessage:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "WSMessage":
+    def from_dict(cls, data: dict[str, Any]) -> WSMessage:
         """Create from dictionary."""
         return cls(
             type=MessageType(data.get("type", "query")),
@@ -293,12 +292,12 @@ class WSMessage:
 
     # Factory methods for common messages
     @classmethod
-    def thinking(cls, message: str = "Analizando consulta...") -> "WSMessage":
+    def thinking(cls, message: str = "Analizando consulta...") -> WSMessage:
         """Create thinking message."""
         return cls(type=MessageType.THINKING, data={"message": message})
 
     @classmethod
-    def streaming(cls, chunk: str, token_count: int = 0) -> "WSMessage":
+    def streaming(cls, chunk: str, token_count: int = 0) -> WSMessage:
         """Create streaming chunk message."""
         return cls(
             type=MessageType.STREAMING,
@@ -309,7 +308,7 @@ class WSMessage:
         )
 
     @classmethod
-    def tool_call(cls, tool_name: str, status: str = "executing") -> "WSMessage":
+    def tool_call(cls, tool_name: str, status: str = "executing") -> WSMessage:
         """Create tool call message."""
         return cls(
             type=MessageType.TOOL_CALL,
@@ -320,7 +319,7 @@ class WSMessage:
         )
 
     @classmethod
-    def rag_search(cls, query: str, results_count: int = 0) -> "WSMessage":
+    def rag_search(cls, query: str, results_count: int = 0) -> WSMessage:
         """Create RAG search message."""
         return cls(
             type=MessageType.RAG_SEARCH,
@@ -331,14 +330,14 @@ class WSMessage:
         )
 
     @classmethod
-    def complete(cls, response: QueryResponse) -> "WSMessage":
+    def complete(cls, response: QueryResponse) -> WSMessage:
         """Create completion message."""
         return cls(type=MessageType.COMPLETE, data=response.to_dict())
 
     @classmethod
     def error(
         cls, code: ErrorCode, message: str, details: dict | None = None
-    ) -> "WSMessage":
+    ) -> WSMessage:
         """Create error message."""
         return cls(
             type=MessageType.ERROR,

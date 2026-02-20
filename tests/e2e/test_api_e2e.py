@@ -6,7 +6,7 @@ Estos tests verifican el funcionamiento real de los endpoints.
 """
 
 import pytest
-from playwright.sync_api import APIRequestContext, expect
+from playwright.sync_api import APIRequestContext
 
 
 @pytest.fixture(scope="session")

@@ -14,16 +14,15 @@ sys.path.insert(0, str(legacy_path))
 
 try:
     from medical_knowledge_base import (
-        MedicalKnowledgeBase,
-        MedicalCondition,
-        Medication,
-        DiagnosticProcedure,
         ClinicalProtocol,
+        DiagnosticProcedure,
+        MedicalCondition,
+        MedicalKnowledgeBase,
+        Medication,
     )
 except ImportError:
     # Stub implementations for when legacy module isn't available
     from dataclasses import dataclass
-    from typing import Dict, List, Any
 
     @dataclass
     class MedicalCondition:
@@ -33,15 +32,15 @@ except ImportError:
         name: str
         category: str
         description: str
-        symptoms: List[str]
-        risk_factors: List[str]
-        complications: List[str]
-        diagnostic_criteria: List[str]
-        differential_diagnosis: List[str]
-        treatment_protocol: List[str]
-        emergency_signs: List[str]
+        symptoms: list[str]
+        risk_factors: list[str]
+        complications: list[str]
+        diagnostic_criteria: list[str]
+        differential_diagnosis: list[str]
+        treatment_protocol: list[str]
+        emergency_signs: list[str]
         prognosis: str
-        follow_up: List[str]
+        follow_up: list[str]
 
     @dataclass
     class Medication:
@@ -50,13 +49,13 @@ except ImportError:
         name: str
         generic_name: str
         category: str
-        indications: List[str]
-        contraindications: List[str]
+        indications: list[str]
+        contraindications: list[str]
         dosage_adult: str
         dosage_pediatric: str
-        side_effects: List[str]
-        interactions: List[str]
-        monitoring: List[str]
+        side_effects: list[str]
+        interactions: list[str]
+        monitoring: list[str]
         pregnancy_category: str
 
     @dataclass
@@ -65,12 +64,12 @@ except ImportError:
 
         name: str
         category: str
-        indications: List[str]
-        contraindications: List[str]
-        preparation: List[str]
-        procedure_steps: List[str]
-        interpretation: List[str]
-        complications: List[str]
+        indications: list[str]
+        contraindications: list[str]
+        preparation: list[str]
+        procedure_steps: list[str]
+        interpretation: list[str]
+        complications: list[str]
         cost_range: str
 
     @dataclass
@@ -80,9 +79,9 @@ except ImportError:
         name: str
         category: str
         indication: str
-        steps: List[str]
-        decision_points: List[str]
-        emergency_modifications: List[str]
+        steps: list[str]
+        decision_points: list[str]
+        emergency_modifications: list[str]
         evidence_level: str
         last_updated: str
 
@@ -90,10 +89,10 @@ except ImportError:
         """Stub medical knowledge base."""
 
         def __init__(self) -> None:
-            self.conditions: Dict[str, MedicalCondition] = {}
-            self.medications: Dict[str, Medication] = {}
-            self.procedures: Dict[str, DiagnosticProcedure] = {}
-            self.protocols: Dict[str, ClinicalProtocol] = {}
+            self.conditions: dict[str, MedicalCondition] = {}
+            self.medications: dict[str, Medication] = {}
+            self.procedures: dict[str, DiagnosticProcedure] = {}
+            self.protocols: dict[str, ClinicalProtocol] = {}
 
 
 __all__ = [

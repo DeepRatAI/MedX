@@ -13,20 +13,19 @@ sys.path.insert(0, str(legacy_path))
 
 try:
     from pharmaceutical_database import (
-        PharmaceuticalDatabase,
-        DrugMonograph,
-        DrugInteraction,
-        Dosage,
         AdverseEffect,
         Contraindication,
-        PharmacokineticData,
+        Dosage,
+        DrugInteraction,
+        DrugMonograph,
         InteractionSeverity,
+        PharmaceuticalDatabase,
+        PharmacokineticData,
         RouteOfAdministration,
     )
 except ImportError:
     # Stub implementation
     from dataclasses import dataclass
-    from typing import Dict, List, Any, Optional
     from enum import Enum
 
     class InteractionSeverity(Enum):
@@ -86,8 +85,8 @@ except ImportError:
 
     class PharmaceuticalDatabase:
         def __init__(self) -> None:
-            self.monographs: Dict[str, DrugMonograph] = {}
-            self.interactions: List[DrugInteraction] = []
+            self.monographs: dict[str, DrugMonograph] = {}
+            self.interactions: list[DrugInteraction] = []
 
 
 __all__ = [

@@ -14,39 +14,29 @@ Tests cover:
 
 from __future__ import annotations
 
-import asyncio
-import tempfile
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any
 
 import pytest
 
 from medex.security.audit import (
     AuditTrail,
     AuditTrailConfig,
-    InMemoryAuditBackend,
     create_audit_trail,
 )
 from medex.security.models import (
     AuditEvent,
     AuditEventType,
-    PIIDetectionResult,
-    PIIEntity,
     PIISeverity,
     PIIType,
     RiskLevel,
-    SanitizationResult,
 )
 from medex.security.pii import (
     PIIDetector,
-    PIIDetectorConfig,
     create_pii_detector,
 )
 from medex.security.sanitizer import (
     InputSanitizer,
     MedicalInputValidator,
-    SanitizerConfig,
     create_input_sanitizer,
     create_medical_validator,
 )
@@ -56,7 +46,6 @@ from medex.security.service import (
     SecurityServiceConfig,
     create_security_service,
 )
-
 
 # =============================================================================
 # Fixtures

@@ -25,29 +25,26 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Optional, Any
+from typing import Any
 
 from sqlalchemy import (
-    String,
-    Text,
     Boolean,
-    Integer,
-    Float,
+    CheckConstraint,
     DateTime,
     ForeignKey,
     Index,
-    CheckConstraint,
+    Integer,
+    String,
+    Text,
     UniqueConstraint,
-    text,
 )
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     mapped_column,
     relationship,
 )
-
 
 # =============================================================================
 # Base Configuration
@@ -152,7 +149,7 @@ class User(Base):
     )
 
     # Preferences (JSONB for flexibility)
-    preferences: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    preferences: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=dict, comment="User preferences: language, specialty, etc."
     )
 
@@ -160,7 +157,7 @@ class User(Base):
     request_count_today: Mapped[int] = mapped_column(
         Integer, default=0, comment="API requests made today"
     )
-    last_request_at: Mapped[Optional[datetime]] = mapped_column(
+    last_request_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True, comment="Timestamp of last API request"
     )
 
@@ -183,7 +180,7 @@ class User(Base):
     )
 
     # Relationships
-    conversations: Mapped[list["Conversation"]] = relationship(
+    conversations: Mapped[list[Conversation]] = relationship(
         "Conversation",
         back_populates="user",
         lazy="selectin",
@@ -241,7 +238,7 @@ class Conversation(Base):
         comment="Conversation title (auto-generated or user-defined)",
     )
 
-    summary: Mapped[Optional[str]] = mapped_column(
+    summary: Mapped[str | None] = mapped_column(
         Text, nullable=True, comment="AI-generated conversation summary"
     )
 
@@ -251,7 +248,7 @@ class Conversation(Base):
     )
 
     # Clinical metadata
-    detected_specialty: Mapped[Optional[str]] = mapped_column(
+    detected_specialty: Mapped[str | None] = mapped_column(
         String(100),
         nullable=True,
         index=True,
@@ -285,16 +282,16 @@ class Conversation(Base):
     )
 
     # Relationships
-    user: Mapped["User"] = relationship("User", back_populates="conversations")
+    user: Mapped[User] = relationship("User", back_populates="conversations")
 
-    messages: Mapped[list["Message"]] = relationship(
+    messages: Mapped[list[Message]] = relationship(
         "Message",
         back_populates="conversation",
         lazy="selectin",
         order_by="Message.sequence_number",
     )
 
-    patient_contexts: Mapped[list["PatientContext"]] = relationship(
+    patient_contexts: Mapped[list[PatientContext]] = relationship(
         "PatientContext", back_populates="conversation", lazy="selectin"
     )
 
@@ -363,21 +360,21 @@ class Message(Base):
     )
 
     # Tool execution reference
-    tool_executions: Mapped[Optional[list[str]]] = mapped_column(
+    tool_executions: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True, comment="Associated tool execution IDs"
     )
 
     # Metadata
-    metadata: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    metadata: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=dict, comment="Additional message metadata"
     )
 
     # Model information
-    model_used: Mapped[Optional[str]] = mapped_column(
+    model_used: Mapped[str | None] = mapped_column(
         String(100), nullable=True, comment="LLM model used for response"
     )
 
-    latency_ms: Mapped[Optional[int]] = mapped_column(
+    latency_ms: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="Response generation time in milliseconds"
     )
 
@@ -390,7 +387,7 @@ class Message(Base):
     )
 
     # Relationships
-    conversation: Mapped["Conversation"] = relationship(
+    conversation: Mapped[Conversation] = relationship(
         "Conversation", back_populates="messages"
     )
 
@@ -452,40 +449,40 @@ class PatientContext(Base):
     )
 
     # Demographics (non-identifying)
-    age_years: Mapped[Optional[int]] = mapped_column(
+    age_years: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="Patient age in years"
     )
 
-    sex: Mapped[Optional[str]] = mapped_column(
+    sex: Mapped[str | None] = mapped_column(
         String(20), nullable=True, comment="Biological sex: male/female/other"
     )
 
     # Clinical data (JSONB for flexibility)
-    chief_complaint: Mapped[Optional[str]] = mapped_column(
+    chief_complaint: Mapped[str | None] = mapped_column(
         Text, nullable=True, comment="Primary reason for consultation"
     )
 
-    symptoms: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    symptoms: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=list, comment="List of symptoms with duration/severity"
     )
 
-    vital_signs: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    vital_signs: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=dict, comment="Vital signs: BP, HR, RR, Temp, SpO2"
     )
 
-    medical_history: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    medical_history: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=dict, comment="Relevant past medical history"
     )
 
-    current_medications: Mapped[Optional[list[str]]] = mapped_column(
+    current_medications: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True, comment="Current medication list"
     )
 
-    allergies: Mapped[Optional[list[str]]] = mapped_column(
+    allergies: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True, comment="Known allergies"
     )
 
-    lab_results: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    lab_results: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=dict, comment="Laboratory results mentioned"
     )
 
@@ -497,7 +494,7 @@ class PatientContext(Base):
         comment="Detected emergency level",
     )
 
-    emergency_indicators: Mapped[Optional[list[str]]] = mapped_column(
+    emergency_indicators: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True, comment="Specific emergency indicators found"
     )
 
@@ -520,7 +517,7 @@ class PatientContext(Base):
     )
 
     # Relationships
-    conversation: Mapped["Conversation"] = relationship(
+    conversation: Mapped[Conversation] = relationship(
         "Conversation", back_populates="patient_contexts"
     )
 
@@ -578,7 +575,7 @@ class ToolExecution(Base):
         comment="Parent conversation ID",
     )
 
-    message_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+    message_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("messages.id", ondelete="SET NULL"),
         nullable=True,
@@ -603,7 +600,7 @@ class ToolExecution(Base):
         JSONB, comment="Tool input parameters"
     )
 
-    output_result: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    output_result: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, nullable=True, comment="Tool output result"
     )
 
@@ -612,16 +609,16 @@ class ToolExecution(Base):
         String(20), default=ToolStatus.PENDING, index=True, comment="Execution status"
     )
 
-    error_message: Mapped[Optional[str]] = mapped_column(
+    error_message: Mapped[str | None] = mapped_column(
         Text, nullable=True, comment="Error message if failed"
     )
 
-    error_traceback: Mapped[Optional[str]] = mapped_column(
+    error_traceback: Mapped[str | None] = mapped_column(
         Text, nullable=True, comment="Full traceback for debugging"
     )
 
     # Performance metrics
-    latency_ms: Mapped[Optional[int]] = mapped_column(
+    latency_ms: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="Execution time in milliseconds"
     )
 
@@ -637,7 +634,7 @@ class ToolExecution(Base):
         comment="Execution start timestamp",
     )
 
-    completed_at: Mapped[Optional[datetime]] = mapped_column(
+    completed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True, comment="Execution completion timestamp"
     )
 
@@ -714,7 +711,7 @@ class KnowledgeBaseIndex(Base):
     )
 
     # Metadata
-    metadata: Mapped[Optional[dict[str, Any]]] = mapped_column(
+    metadata: Mapped[dict[str, Any] | None] = mapped_column(
         JSONB, default=dict, comment="Additional metadata: category, specialty, etc."
     )
 

@@ -23,11 +23,12 @@ Configuration via environment variables:
 
 from __future__ import annotations
 
-import os
 import logging
-from typing import AsyncGenerator, Optional
+import os
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -35,10 +36,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.pool import NullPool
-from sqlalchemy import text, event
 
 from src.medex.db.models import Base
-
 
 # =============================================================================
 # Logging Configuration
@@ -97,7 +96,7 @@ def get_pool_config() -> dict:
 # Engine Factory
 # =============================================================================
 
-_engine: Optional[AsyncEngine] = None
+_engine: AsyncEngine | None = None
 
 
 def get_async_engine(
@@ -161,7 +160,7 @@ def get_async_engine(
 # Session Factory
 # =============================================================================
 
-AsyncSessionLocal: Optional[async_sessionmaker[AsyncSession]] = None
+AsyncSessionLocal: async_sessionmaker[AsyncSession] | None = None
 
 
 def get_session_factory() -> async_sessionmaker[AsyncSession]:
@@ -332,9 +331,9 @@ async def check_db_health() -> dict:
             {
                 "status": "healthy",
                 "pool_size": pool.size() if hasattr(pool, "size") else None,
-                "pool_checked_out": pool.checkedout()
-                if hasattr(pool, "checkedout")
-                else None,
+                "pool_checked_out": (
+                    pool.checkedout() if hasattr(pool, "checkedout") else None
+                ),
                 "latency_ms": round(latency, 2),
             }
         )
@@ -371,7 +370,7 @@ async def transaction_scope() -> AsyncGenerator[AsyncSession, None]:
             yield session
 
 
-async def execute_raw_sql(sql: str, params: Optional[dict] = None) -> list:
+async def execute_raw_sql(sql: str, params: dict | None = None) -> list:
     """
     Execute raw SQL query for complex operations.
 

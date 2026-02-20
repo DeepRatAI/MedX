@@ -17,14 +17,11 @@ SOTA Level: Production-grade testing with fixtures, mocks, and assertions.
 
 from __future__ import annotations
 
-import asyncio
 import os
-from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-from unittest.mock import AsyncMock, MagicMock, patch
-import pytest
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 
 # =============================================================================
 # Test Fixtures
@@ -454,7 +451,7 @@ class TestMedeXConfig:
 
     def test_validate_missing_required(self, clean_env):
         """Test validation with missing required config."""
-        from medex.config import MedeXConfig, Environment, LLMConfig
+        from medex.config import Environment, LLMConfig, MedeXConfig
 
         config = MedeXConfig(
             environment=Environment.PRODUCTION,
@@ -533,8 +530,9 @@ class TestApplicationState:
 
     def test_uptime_calculation(self):
         """Test uptime calculation."""
+        from datetime import timezone
+
         from medex.main import ApplicationState
-        from datetime import datetime, timezone
 
         state = ApplicationState()
         state.started_at = datetime.now(timezone.utc)
@@ -661,6 +659,7 @@ class TestCLI:
     def test_parse_serve_command(self):
         """Test parsing serve command."""
         import sys
+
         from medex.__main__ import parse_args
 
         original_argv = sys.argv
@@ -677,6 +676,7 @@ class TestCLI:
     def test_parse_query_command(self):
         """Test parsing query command."""
         import sys
+
         from medex.__main__ import parse_args
 
         original_argv = sys.argv
@@ -700,6 +700,7 @@ class TestCLI:
     def test_parse_health_command(self):
         """Test parsing health command."""
         import sys
+
         from medex.__main__ import parse_args
 
         original_argv = sys.argv
@@ -715,6 +716,7 @@ class TestCLI:
     def test_parse_config_command(self):
         """Test parsing config command."""
         import sys
+
         from medex.__main__ import parse_args
 
         original_argv = sys.argv
@@ -731,6 +733,7 @@ class TestCLI:
     def test_parse_version(self):
         """Test parsing version flag."""
         import sys
+
         from medex.__main__ import parse_args
 
         original_argv = sys.argv
@@ -783,12 +786,12 @@ class TestCrossModuleIntegration:
     def test_module_exports(self):
         """Test all expected exports are available."""
         from medex import (
-            MedeXApplication,
             ApplicationState,
+            MedeXApplication,
             ServiceContainer,
+            __version__,
             create_application,
             run_server,
-            __version__,
         )
 
         assert MedeXApplication is not None
@@ -802,7 +805,8 @@ class TestCrossModuleIntegration:
         """Test legacy V1 exports still work."""
         # These should not raise ImportError
         try:
-            from medex import MedeXEngine, MedeXConfig
+            from medex import MedeXConfig, MedeXEngine  # noqa: F401
+
             # If they don't exist, that's okay for V2
         except ImportError:
             pass  # Expected if V1 is not available
@@ -850,7 +854,7 @@ class TestErrorHandling:
 
     def test_config_validation_errors(self):
         """Test configuration validation errors."""
-        from medex.config import MedeXConfig, Environment
+        from medex.config import Environment, MedeXConfig
 
         config = MedeXConfig(
             environment=Environment.PRODUCTION,
@@ -872,8 +876,9 @@ class TestPerformance:
 
     def test_config_creation_fast(self):
         """Test config creation is fast."""
-        from medex.config import MedeXConfig
         import time
+
+        from medex.config import MedeXConfig
 
         start = time.time()
         for _ in range(100):
@@ -885,8 +890,9 @@ class TestPerformance:
     @pytest.mark.asyncio
     async def test_health_check_fast(self):
         """Test health check is fast."""
-        from medex.main import MedeXApplication
         import time
+
+        from medex.main import MedeXApplication
 
         app = MedeXApplication()
         await app.startup()

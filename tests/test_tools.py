@@ -16,11 +16,11 @@ from __future__ import annotations
 
 import asyncio
 import json
-from typing import Any
 from uuid import uuid4
 
 import pytest
 
+from medex.tools.executor import ToolExecutor, create_tool_executor
 from medex.tools.models import (
     ParameterType,
     ToolCall,
@@ -33,13 +33,10 @@ from medex.tools.models import (
 )
 from medex.tools.registry import (
     ToolRegistry,
-    get_tool_registry,
     number_param,
     string_param,
     tool,
 )
-from medex.tools.executor import ToolExecutor, create_tool_executor
-
 
 # =============================================================================
 # Fixtures

@@ -17,8 +17,7 @@ import asyncio
 import logging
 import time
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 from typing import Any
 
 from medex.observability.models import (
@@ -27,7 +26,6 @@ from medex.observability.models import (
     HealthStatus,
     SystemHealth,
 )
-
 
 logger = logging.getLogger(__name__)
 

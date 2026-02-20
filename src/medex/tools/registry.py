@@ -21,7 +21,8 @@ from __future__ import annotations
 
 import functools
 import logging
-from typing import Any, Callable, Coroutine
+from collections.abc import Callable, Coroutine
+from typing import Any
 
 from .models import (
     ParameterType,

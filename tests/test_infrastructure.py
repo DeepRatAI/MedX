@@ -17,11 +17,11 @@ Prerequisites:
 
 from __future__ import annotations
 
-import pytest
 import asyncio
 import uuid
-from datetime import datetime, timezone, timedelta
-from typing import AsyncGenerator
+from datetime import timedelta
+
+import pytest
 
 # Mark all tests in this module as async
 pytestmark = pytest.mark.asyncio
@@ -44,9 +44,9 @@ def event_loop():
 async def db_session():
     """Provide database session for tests."""
     from src.medex.db.connection import (
-        init_db,
         close_db,
         get_session_context,
+        init_db,
     )
 
     # Initialize with test tables
@@ -61,7 +61,7 @@ async def db_session():
 @pytest.fixture
 async def redis_client():
     """Provide Redis client for tests."""
-    from src.medex.db.cache import get_redis_client, close_redis
+    from src.medex.db.cache import close_redis, get_redis_client
 
     client = await get_redis_client()
     yield client
@@ -113,12 +113,10 @@ class TestPostgreSQLConnection:
         from sqlalchemy import text
 
         # Test JSONB insertion and query
-        result = await db_session.execute(
-            text("""
+        result = await db_session.execute(text("""
                 SELECT '{"name": "test", "value": 42}'::jsonb ->> 'name' as name,
                        ('{"name": "test", "value": 42}'::jsonb -> 'value')::int as value
-            """)
-        )
+            """))
         row = result.fetchone()
 
         assert row.name == "test"
@@ -126,7 +124,7 @@ class TestPostgreSQLConnection:
 
     async def test_health_check(self):
         """Test database health check function."""
-        from src.medex.db.connection import init_db, close_db, check_db_health
+        from src.medex.db.connection import check_db_health, close_db, init_db
 
         await init_db()
         health = await check_db_health()
@@ -147,8 +145,8 @@ class TestUserRepository:
 
     async def test_create_user(self, db_session):
         """Test user creation."""
-        from src.medex.db.repositories import UserRepository
         from src.medex.db.models import User
+        from src.medex.db.repositories import UserRepository
 
         repo = UserRepository(db_session)
         session_id = f"test_session_{uuid.uuid4().hex[:8]}"
@@ -180,8 +178,8 @@ class TestUserRepository:
 
     async def test_update_detected_type(self, db_session):
         """Test updating user's detected type."""
-        from src.medex.db.repositories import UserRepository
         from src.medex.db.models import User, UserType
+        from src.medex.db.repositories import UserRepository
 
         repo = UserRepository(db_session)
         session_id = f"test_session_{uuid.uuid4().hex[:8]}"
@@ -208,8 +206,8 @@ class TestConversationRepository:
 
     async def test_create_conversation(self, db_session):
         """Test conversation creation."""
-        from src.medex.db.repositories import UserRepository, ConversationRepository
         from src.medex.db.models import User
+        from src.medex.db.repositories import ConversationRepository, UserRepository
 
         # Create user first
         user_repo = UserRepository(db_session)
@@ -228,8 +226,8 @@ class TestConversationRepository:
 
     async def test_get_user_conversations(self, db_session):
         """Test fetching user's conversations."""
-        from src.medex.db.repositories import UserRepository, ConversationRepository
         from src.medex.db.models import User
+        from src.medex.db.repositories import ConversationRepository, UserRepository
 
         # Create user and multiple conversations
         user_repo = UserRepository(db_session)
@@ -258,12 +256,12 @@ class TestMessageRepository:
 
     async def test_create_messages(self, db_session):
         """Test message creation with auto-sequencing."""
+        from src.medex.db.models import MessageRole, User
         from src.medex.db.repositories import (
-            UserRepository,
             ConversationRepository,
             MessageRepository,
+            UserRepository,
         )
-        from src.medex.db.models import User, MessageRole
 
         # Setup
         user_repo = UserRepository(db_session)
@@ -300,12 +298,12 @@ class TestMessageRepository:
 
     async def test_get_total_tokens(self, db_session):
         """Test token counting across messages."""
+        from src.medex.db.models import MessageRole, User
         from src.medex.db.repositories import (
-            UserRepository,
             ConversationRepository,
             MessageRepository,
+            UserRepository,
         )
-        from src.medex.db.models import User, MessageRole
 
         # Setup
         user_repo = UserRepository(db_session)
@@ -414,7 +412,7 @@ class TestRedisConnection:
 
     async def test_health_check(self):
         """Test Redis health check."""
-        from src.medex.db.cache import get_redis_client, close_redis, check_redis_health
+        from src.medex.db.cache import check_redis_health, close_redis, get_redis_client
 
         await get_redis_client()
         health = await check_redis_health()
@@ -487,13 +485,13 @@ class TestInfrastructureIntegration:
 
     async def test_full_conversation_flow(self, db_session, redis_client):
         """Test complete conversation creation and caching flow."""
+        from src.medex.db.cache import ContextWindowCache
+        from src.medex.db.models import MessageRole, User
         from src.medex.db.repositories import (
-            UserRepository,
             ConversationRepository,
             MessageRepository,
+            UserRepository,
         )
-        from src.medex.db.models import User, MessageRole
-        from src.medex.db.cache import ContextWindowCache
 
         # Create user
         user_repo = UserRepository(db_session)

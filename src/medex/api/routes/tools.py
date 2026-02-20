@@ -22,9 +22,6 @@ from pydantic import BaseModel, Field
 
 # Import tools directly for fast execution
 from medex.tools.medical.drug_interactions import check_drug_interactions
-from medex.tools.medical.dosage_calculator import calculate_pediatric_dose
-from medex.tools.medical.lab_interpreter import interpret_cbc
-
 
 logger = logging.getLogger(__name__)
 

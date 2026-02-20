@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from ..db.models import Conversation, Message, MessageRole
@@ -57,7 +57,7 @@ class ConversationSummary:
         created_at: datetime,
         updated_at: datetime,
         message_count: int = 0,
-        last_message_preview: Optional[str] = None,
+        last_message_preview: str | None = None,
     ):
         self.id = id
         self.title = title
@@ -76,8 +76,8 @@ class MessageData:
         self,
         role: MessageRole,
         content: str,
-        metadata: Optional[dict] = None,
-        created_at: Optional[datetime] = None,
+        metadata: dict | None = None,
+        created_at: datetime | None = None,
     ):
         self.role = role
         self.content = content
@@ -104,7 +104,7 @@ class ConversationManager:
     def __init__(
         self,
         session: AsyncSession,
-        title_generator: Optional[TitleGenerator] = None,
+        title_generator: TitleGenerator | None = None,
     ):
         """
         Initialize conversation manager.
@@ -125,8 +125,8 @@ class ConversationManager:
     async def create_conversation(
         self,
         user_id: UUID,
-        title: Optional[str] = None,
-        metadata: Optional[dict] = None,
+        title: str | None = None,
+        metadata: dict | None = None,
     ) -> Conversation:
         """
         Create a new conversation.
@@ -154,8 +154,8 @@ class ConversationManager:
     async def get_conversation(
         self,
         conversation_id: UUID,
-        user_id: Optional[UUID] = None,
-    ) -> Optional[Conversation]:
+        user_id: UUID | None = None,
+    ) -> Conversation | None:
         """
         Get conversation by ID.
 
@@ -186,7 +186,7 @@ class ConversationManager:
         user_id: UUID,
         limit: int = 50,
         offset: int = 0,
-    ) -> List[ConversationSummary]:
+    ) -> list[ConversationSummary]:
         """
         List user conversations with summaries.
 
@@ -231,7 +231,7 @@ class ConversationManager:
         self,
         conversation_id: UUID,
         title: str,
-    ) -> Optional[Conversation]:
+    ) -> Conversation | None:
         """
         Update conversation title.
 
@@ -254,7 +254,7 @@ class ConversationManager:
     async def delete_conversation(
         self,
         conversation_id: UUID,
-        user_id: Optional[UUID] = None,
+        user_id: UUID | None = None,
         soft: bool = True,
     ) -> bool:
         """
@@ -289,7 +289,7 @@ class ConversationManager:
         conversation_id: UUID,
         role: MessageRole,
         content: str,
-        metadata: Optional[dict] = None,
+        metadata: dict | None = None,
         auto_title: bool = True,
     ) -> Message:
         """
@@ -341,7 +341,7 @@ class ConversationManager:
         self,
         conversation_id: UUID,
         content: str,
-        metadata: Optional[dict] = None,
+        metadata: dict | None = None,
     ) -> Message:
         """Convenience method to add a user message."""
         return await self.add_message(
@@ -355,7 +355,7 @@ class ConversationManager:
         self,
         conversation_id: UUID,
         content: str,
-        metadata: Optional[dict] = None,
+        metadata: dict | None = None,
     ) -> Message:
         """Convenience method to add an assistant message."""
         return await self.add_message(
@@ -370,7 +370,7 @@ class ConversationManager:
         self,
         conversation_id: UUID,
         content: str,
-        metadata: Optional[dict] = None,
+        metadata: dict | None = None,
     ) -> Message:
         """Convenience method to add a system message."""
         return await self.add_message(
@@ -384,9 +384,9 @@ class ConversationManager:
     async def get_messages(
         self,
         conversation_id: UUID,
-        limit: Optional[int] = None,
+        limit: int | None = None,
         include_system: bool = True,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """
         Get messages for a conversation.
 
@@ -411,8 +411,8 @@ class ConversationManager:
     async def get_message_history(
         self,
         conversation_id: UUID,
-        limit: Optional[int] = None,
-    ) -> List[MessageData]:
+        limit: int | None = None,
+    ) -> list[MessageData]:
         """
         Get message history as structured data.
 
@@ -442,7 +442,7 @@ class ConversationManager:
     async def get_or_create_conversation(
         self,
         user_id: UUID,
-        conversation_id: Optional[UUID] = None,
+        conversation_id: UUID | None = None,
     ) -> Conversation:
         """
         Get existing or create new conversation.

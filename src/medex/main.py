@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
-
 # =============================================================================
 # Application State
 # =============================================================================
@@ -69,7 +68,7 @@ class ServiceContainer:
         self._factories: dict[str, Any] = {}
         self._initialized: set[str] = set()
 
-    def register(self, name: str, factory: Any) -> "ServiceContainer":
+    def register(self, name: str, factory: Any) -> ServiceContainer:
         """Register a service factory."""
         self._factories[name] = factory
         return self
@@ -191,8 +190,8 @@ class MedeXApplication:
         2. Tools service
         3. Agent service
         """
-        print(f"[MedeX] Starting MedeX v2.0.0...")
-        print(f"[MedeX] Environment: development")
+        print("[MedeX] Starting MedeX v2.0.0...")
+        print("[MedeX] Environment: development")
 
         start_time = time.time()
         self._state.started_at = datetime.now()
@@ -200,9 +199,9 @@ class MedeXApplication:
 
         try:
             # Import real services
+            from medex.agent.service import AgentService, AgentServiceConfig
             from medex.llm.service import LLMService, LLMServiceConfig
             from medex.tools.service import ToolService
-            from medex.agent.service import AgentService, AgentServiceConfig
 
             # Initialize LLM service
             print("[MedeX] Initializing LLM providers...")
@@ -248,7 +247,7 @@ class MedeXApplication:
 
             elapsed = time.time() - start_time
             print(f"[MedeX] ✓ Application started in {elapsed:.2f}s")
-            print(f"[MedeX] Ready to accept requests")
+            print("[MedeX] Ready to accept requests")
 
         except Exception as e:
             print(f"[MedeX] ✗ Startup failed: {e}")
@@ -329,8 +328,8 @@ class MedeXApplication:
         self._state.total_requests += 1
 
         try:
-            from medex.llm.prompts import Language, UserMode
             from medex.llm.models import Message, MessageRole
+            from medex.llm.prompts import Language, UserMode
 
             # Map user type to UserMode
             mode_map = {
@@ -345,9 +344,11 @@ class MedeXApplication:
             if history:
                 llm_history = [
                     Message(
-                        role=MessageRole.USER
-                        if m.get("role") == "user"
-                        else MessageRole.ASSISTANT,
+                        role=(
+                            MessageRole.USER
+                            if m.get("role") == "user"
+                            else MessageRole.ASSISTANT
+                        ),
                         content=m.get("content", ""),
                     )
                     for m in history[-20:]  # Keep last 20 messages for context window
@@ -400,15 +401,15 @@ class MedeXApplication:
                 "model": response.model,
                 "tokens": {
                     "prompt": response.usage.prompt_tokens if response.usage else 0,
-                    "completion": response.usage.completion_tokens
-                    if response.usage
-                    else 0,
+                    "completion": (
+                        response.usage.completion_tokens if response.usage else 0
+                    ),
                     "total": response.usage.total_tokens if response.usage else 0,
                 },
                 "latency_ms": response.latency_ms,
                 "sources": [],
             }
-        except Exception as e:
+        except Exception:
             self._state.total_errors += 1
             import traceback
 

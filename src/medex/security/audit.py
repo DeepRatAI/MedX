@@ -17,10 +17,11 @@ import asyncio
 import json
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, AsyncIterator, Callable
+from typing import Any
 
 from medex.security.models import (
     AuditEvent,
@@ -28,7 +29,6 @@ from medex.security.models import (
     AuditQuery,
     RiskLevel,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -197,7 +197,7 @@ class FileAuditBackend(AuditBackend):
         """Read and filter events from file."""
         events = []
 
-        with open(log_file, "r", encoding="utf-8") as f:
+        with open(log_file, encoding="utf-8") as f:
             for line in f:
                 try:
                     data = json.loads(line.strip())
@@ -368,9 +368,11 @@ class AuditTrail:
     ) -> AuditEvent:
         """Log PII detection event."""
         event = AuditEvent(
-            event_type=AuditEventType.PII_DETECTED
-            if action == "detected"
-            else AuditEventType.PII_REDACTED,
+            event_type=(
+                AuditEventType.PII_DETECTED
+                if action == "detected"
+                else AuditEventType.PII_REDACTED
+            ),
             user_id=user_id,
             resource_type="pii",
             action=action,

@@ -2,10 +2,8 @@
 Tests for user type and emergency detection.
 """
 
-import pytest
-
-from medex.detection.user_type import UserTypeDetector, DetectionResult
 from medex.detection.emergency import EmergencyDetector, EmergencyLevel
+from medex.detection.user_type import UserTypeDetector
 
 
 class TestUserTypeDetector:

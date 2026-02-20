@@ -9,19 +9,19 @@ from fastapi.testclient import TestClient
 
 # Import with try/except for standalone testing
 try:
-    from api.main import app, API_VERSION
-    from api.auth import DEMO_API_KEY, validate_api_key, _hash_key
-    from api.models import Language, UserType, UrgencyLevel, ResponseStatus
-    from api.services import get_query_service, get_ddx_service, get_kb_service
+    from api.auth import DEMO_API_KEY, _hash_key, validate_api_key
+    from api.main import API_VERSION, app
+    from api.models import Language, ResponseStatus, UrgencyLevel, UserType
+    from api.services import get_ddx_service, get_kb_service, get_query_service
 except ImportError:
     import sys
     from pathlib import Path
 
     sys.path.insert(0, str(Path(__file__).parent.parent))
-    from api.main import app, API_VERSION
-    from api.auth import DEMO_API_KEY, validate_api_key, _hash_key
-    from api.models import Language, UserType, UrgencyLevel, ResponseStatus
-    from api.services import get_query_service, get_ddx_service, get_kb_service
+    from api.auth import DEMO_API_KEY, _hash_key, validate_api_key
+    from api.main import API_VERSION, app
+    from api.models import Language, ResponseStatus, UrgencyLevel, UserType
+    from api.services import get_ddx_service, get_kb_service, get_query_service
 
 
 # =============================================================================

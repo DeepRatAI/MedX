@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Literal, List, Tuple
+from typing import Literal
 
 UserType = Literal["Professional", "Educational"]
 
@@ -30,7 +30,7 @@ class DetectionResult:
     confidence: float
     professional_score: int
     educational_score: int
-    matched_patterns: List[str]
+    matched_patterns: list[str]
 
 
 class UserTypeDetector:
@@ -45,7 +45,7 @@ class UserTypeDetector:
     """
 
     # Professional medical language patterns (Spanish)
-    PROFESSIONAL_PATTERNS: List[Tuple[str, int]] = [
+    PROFESSIONAL_PATTERNS: list[tuple[str, int]] = [
         # High-confidence patterns (score: 3)
         (r"paciente\s+de\s+\d+\s+a[ñn]os", 3),  # "paciente de 45 años"
         (r"paciente\s+(masculino|femenino)", 3),  # "paciente masculino/femenino"
@@ -81,7 +81,7 @@ class UserTypeDetector:
     ]
 
     # Patient/educational language patterns (Spanish)
-    EDUCATIONAL_PATTERNS: List[Tuple[str, int]] = [
+    EDUCATIONAL_PATTERNS: list[tuple[str, int]] = [
         # High-confidence patterns (score: 3)
         (r"me\s+duele", 3),  # "me duele"
         (r"tengo\s+dolor", 3),  # "tengo dolor"
@@ -130,7 +130,7 @@ class UserTypeDetector:
         """
         professional_score = 0
         educational_score = 0
-        matched_patterns: List[str] = []
+        matched_patterns: list[str] = []
 
         # Score professional patterns
         for pattern, score in self._professional_compiled:

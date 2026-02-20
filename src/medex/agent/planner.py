@@ -16,9 +16,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from dataclasses import dataclass, field
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable, Awaitable
+from typing import Any
 
 from medex.agent.models import (
     ActionType,
@@ -27,10 +28,8 @@ from medex.agent.models import (
     AgentPlan,
     IntentType,
     PlanStatus,
-    UrgencyLevel,
     UserIntent,
 )
-
 
 logger = logging.getLogger(__name__)
 
