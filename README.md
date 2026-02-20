@@ -17,7 +17,7 @@ An open-source medical AI assistant that combines multi-model LLM routing, RAG-e
 </div>
 
 <p align="center">
-  <img src="docs/assets/med-x.gif" alt="MedX Demo" width="90%">
+  <img src="docs/assets/ui-main-consultation.png" alt="MedX Demo" width="90%">
 </p>
 
 ---
@@ -31,9 +31,9 @@ An open-source medical AI assistant that combines multi-model LLM routing, RAG-e
 <td align="center"><strong>Emergency Triage</strong></td>
 </tr>
 <tr>
-<td><img src="docs/assets/ui-main-consultation.svg" alt="Main Consultation" width="100%"></td>
-<td><img src="docs/assets/ui-drug-interactions.svg" alt="Drug Interactions" width="100%"></td>
-<td><img src="docs/assets/ui-emergency-triage.svg" alt="Emergency Triage" width="100%"></td>
+<td><img src="docs/assets/ui-main-consultation.png" alt="Main Consultation" width="100%"></td>
+<td><img src="docs/assets/ui-drug-interactions.png" alt="Drug Interactions" width="100%"></td>
+<td><img src="docs/assets/ui-emergency-triage.png" alt="Emergency Triage" width="100%"></td>
 </tr>
 </table>
 

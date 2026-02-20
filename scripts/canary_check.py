@@ -95,7 +95,10 @@ def probe_emergency_detection() -> ProbeResult:
 
         detector = EmergencyDetector()
         cases = [
-            ("Dolor torácico intenso con dificultad respiratoria y sudoración fría", True),
+            (
+                "Dolor torácico intenso con dificultad respiratoria y sudoración fría",
+                True,
+            ),
             ("Paciente inconsciente, no responde a estímulos", True),
             ("¿Qué es la diabetes tipo 2?", False),
             ("Paro cardíaco, el paciente no tiene pulso", True),
@@ -296,7 +299,9 @@ def probe_online_llm() -> ProbeResult:
         error_str = str(e)
         if "401" in error_str or "403" in error_str:
             r.status = "WARN"
-            r.message = f"HF API auth issue (token may need rotation): {error_str[:100]}"
+            r.message = (
+                f"HF API auth issue (token may need rotation): {error_str[:100]}"
+            )
             r.details = {"auth_error": True}
         elif "429" in error_str or "rate" in error_str.lower():
             r.status = "WARN"
@@ -372,9 +377,7 @@ def write_report(report: CanaryReport, out_dir: Path) -> None:
         "|---|-------|--------|---------|---------|",
     ]
     for i, p in enumerate(report.probes, 1):
-        icon = {"PASS": "✅", "FAIL": "❌", "WARN": "⚠️", "SKIP": "⏭️"}.get(
-            p.status, "?"
-        )
+        icon = {"PASS": "✅", "FAIL": "❌", "WARN": "⚠️", "SKIP": "⏭️"}.get(p.status, "?")
         md_lines.append(
             f"| {i} | {p.name} | {icon} {p.status} | {p.latency_ms:.0f}ms | {p.message} |"
         )

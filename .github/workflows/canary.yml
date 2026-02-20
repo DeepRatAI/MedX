@@ -2,8 +2,8 @@ name: MedX Online Canary
 
 on:
   schedule:
-    - cron: "0 6 */2 * *"   # Every 48h at 06:00 UTC
-  workflow_dispatch:          # Manual trigger
+    - cron: "0 6 */2 * *" # Every 48h at 06:00 UTC
+  workflow_dispatch: # Manual trigger
 
 permissions:
   contents: read

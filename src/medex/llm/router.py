@@ -250,6 +250,35 @@ class LLMClient:
             return False
         return self.status.is_available and self.status.is_healthy
 
+    def _resolve_model(self, requested_model: str | None) -> str:
+        """Resolve model name for this provider.
+
+        When failing over to a non-primary provider, the requested model
+        (usually a HuggingFace model name like 'google/gemma-3-27b-it')
+        may not be available on the selected provider. In that case,
+        fall back to the provider's default model.
+        """
+        if not requested_model:
+            return self.config.model
+
+        # HuggingFace Router can serve any model
+        if self.provider == LLMProvider.HUGGINGFACE:
+            return requested_model
+
+        # Check if model is known for this provider
+        known_models = {self.config.model}
+        known_models.update(MODEL_ALTERNATIVES.get(self.provider, []))
+
+        if requested_model in known_models:
+            return requested_model
+
+        # Model not compatible with this provider — use default
+        logger.info(
+            f"Model '{requested_model}' not available on {self.provider.value}, "
+            f"using default: {self.config.model}"
+        )
+        return self.config.model
+
     async def _get_client(self) -> httpx.AsyncClient:
         """Get or create HTTP client."""
         if self._client is None or self._client.is_closed:
@@ -287,8 +316,8 @@ class LLMClient:
 
             # Build request body
             body = request.to_api_format()
-            # Use request.model if specified, otherwise use config default
-            body["model"] = request.model if request.model else self.config.model
+            # Resolve model for this provider (handles cross-provider fallback)
+            body["model"] = self._resolve_model(request.model)
             body["stream"] = False
 
             # Apply config defaults
@@ -372,8 +401,8 @@ class LLMClient:
 
             # Build request body
             body = request.to_api_format()
-            # Use request.model if specified, otherwise use config default
-            body["model"] = request.model if request.model else self.config.model
+            # Resolve model for this provider (handles cross-provider fallback)
+            body["model"] = self._resolve_model(request.model)
             body["stream"] = True
 
             # Apply config defaults
