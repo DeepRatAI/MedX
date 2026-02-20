@@ -1,0 +1,99 @@
+# =============================================================================
+# MedeX - Docker Ignore File
+# Excludes unnecessary files from Docker build context
+# =============================================================================
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+env
+.env
+.env.*
+!.env.example
+
+# IDE and Editor
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.nox
+coverage.xml
+*.cover
+tests/
+!tests/__init__.py
+
+# Documentation
+docs/
+*.md
+!README.md
+LICENSE*
+CHANGELOG*
+CONTRIBUTING*
+
+# Build artifacts
+build/
+dist/
+*.egg-info
+.eggs
+
+# Logs and caches
+logs/
+*.log
+.cache
+*.cache
+rag_cache/
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker
+!Dockerfile
+!docker-compose.yml
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+azure-pipelines.yml
+
+# Misc
+*.bak
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Development scripts
+scripts/
+Makefile
+
+# Large model files (download at runtime)
+*.bin
+*.pt
+*.pth
+*.onnx
+models/
+
+# Kubernetes
+k8s/

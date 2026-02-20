@@ -1,0 +1,310 @@
+# =============================================================================
+# MedeX - Medical AI Intelligence System
+# Docker Compose Configuration
+# =============================================================================
+# Usage:
+#   Production API:    docker compose up api
+#   Production UI:     docker compose up ui
+#   Full Stack:        docker compose up
+#   Infrastructure:    docker compose up postgres redis qdrant
+#   Development:       docker compose --profile dev up
+#   HuggingFace mode:  docker compose --profile hf up huggingface
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 - Primary Database (Conversations, Users, Context)
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: medex-postgres
+    restart: unless-stopped
+    ports:
+      - "${MEDEX_POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${MEDEX_POSTGRES_DB:-medex}
+      POSTGRES_USER: ${MEDEX_POSTGRES_USER:-medex}
+      POSTGRES_PASSWORD: ${MEDEX_POSTGRES_PASSWORD:-medex_secure_password}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - medex-postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${MEDEX_POSTGRES_USER:-medex} -d ${MEDEX_POSTGRES_DB:-medex}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - medex-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # ---------------------------------------------------------------------------
+  # Redis 7 - Cache & Session Store (Context Window, Rate Limiting)
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: medex-redis
+    restart: unless-stopped
+    ports:
+      - "${MEDEX_REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - medex-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - medex-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+  # ---------------------------------------------------------------------------
+  # Qdrant - Vector Database (RAG Embeddings, Knowledge Base)
+  # ---------------------------------------------------------------------------
+  qdrant:
+    image: qdrant/qdrant:v1.12.1
+    container_name: medex-qdrant
+    restart: unless-stopped
+    ports:
+      - "${MEDEX_QDRANT_HTTP_PORT:-6333}:6333"
+      - "${MEDEX_QDRANT_GRPC_PORT:-6334}:6334"
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+      QDRANT__SERVICE__HTTP_PORT: 6333
+      QDRANT__STORAGE__STORAGE_PATH: /qdrant/storage
+      QDRANT__STORAGE__SNAPSHOTS_PATH: /qdrant/snapshots
+      QDRANT__LOG_LEVEL: INFO
+    volumes:
+      - medex-qdrant-data:/qdrant/storage
+      - medex-qdrant-snapshots:/qdrant/snapshots
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - medex-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+  # ---------------------------------------------------------------------------
+  # API Service - FastAPI Backend
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: medex-api
+    restart: unless-stopped
+    ports:
+      - "${MEDEX_API_PORT:-8000}:8000"
+    environment:
+      - MEDEX_ENV=production
+      - MEDEX_LOG_LEVEL=${MEDEX_LOG_LEVEL:-INFO}
+      - MEDEX_API_KEY=${MEDEX_API_KEY:-}
+      - MEDEX_RATE_LIMIT=${MEDEX_RATE_LIMIT:-60}
+      # Database connections
+      - MEDEX_POSTGRES_HOST=postgres
+      - MEDEX_POSTGRES_PORT=5432
+      - MEDEX_POSTGRES_DB=${MEDEX_POSTGRES_DB:-medex}
+      - MEDEX_POSTGRES_USER=${MEDEX_POSTGRES_USER:-medex}
+      - MEDEX_POSTGRES_PASSWORD=${MEDEX_POSTGRES_PASSWORD:-medex_secure_password}
+      - MEDEX_REDIS_HOST=redis
+      - MEDEX_REDIS_PORT=6379
+      - MEDEX_QDRANT_HOST=qdrant
+      - MEDEX_QDRANT_HTTP_PORT=6333
+      - MEDEX_QDRANT_GRPC_PORT=6334
+    volumes:
+      - medex-data:/app/data
+      - medex-logs:/app/logs
+      - medex-cache:/app/cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    networks:
+      - medex-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  # ---------------------------------------------------------------------------
+  # UI Service - Streamlit Frontend
+  # ---------------------------------------------------------------------------
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ui
+    container_name: medex-ui
+    restart: unless-stopped
+    ports:
+      - "${MEDEX_UI_PORT:-8501}:8501"
+    environment:
+      - MEDEX_ENV=production
+      - MEDEX_API_URL=http://api:8000
+      # Database connections for direct memory access
+      - MEDEX_POSTGRES_HOST=postgres
+      - MEDEX_POSTGRES_PORT=5432
+      - MEDEX_POSTGRES_DB=${MEDEX_POSTGRES_DB:-medex}
+      - MEDEX_POSTGRES_USER=${MEDEX_POSTGRES_USER:-medex}
+      - MEDEX_POSTGRES_PASSWORD=${MEDEX_POSTGRES_PASSWORD:-medex_secure_password}
+      - MEDEX_REDIS_HOST=redis
+      - MEDEX_REDIS_PORT=6379
+    volumes:
+      - medex-cache:/app/cache
+      - medex-logs:/app/logs
+    depends_on:
+      api:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - medex-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # ---------------------------------------------------------------------------
+  # Development Service - API with hot reload
+  # ---------------------------------------------------------------------------
+  api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: medex-api-dev
+    ports:
+      - "${MEDEX_API_PORT:-8000}:8000"
+    environment:
+      - MEDEX_ENV=development
+      - MEDEX_LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+      - medex-cache:/app/cache
+    networks:
+      - medex-network
+    profiles:
+      - dev
+
+  # ---------------------------------------------------------------------------
+  # HuggingFace Spaces compatible service
+  # ---------------------------------------------------------------------------
+  huggingface:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: huggingface
+    container_name: medex-hf
+    ports:
+      - "7860:7860"
+    environment:
+      - STREAMLIT_SERVER_PORT=7860
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    volumes:
+      - medex-cache:/home/user/app/cache
+    networks:
+      - medex-network
+    profiles:
+      - hf
+
+  # ---------------------------------------------------------------------------
+  # Nginx Reverse Proxy (optional, for production)
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: medex-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+      - ui
+    networks:
+      - medex-network
+    profiles:
+      - proxy
+
+# -----------------------------------------------------------------------------
+# Networks
+# -----------------------------------------------------------------------------
+networks:
+  medex-network:
+    driver: bridge
+    name: medex-network
+
+# -----------------------------------------------------------------------------
+# Volumes
+# -----------------------------------------------------------------------------
+volumes:
+  # Infrastructure volumes
+  medex-postgres-data:
+    name: medex-postgres-data
+  medex-redis-data:
+    name: medex-redis-data
+  medex-qdrant-data:
+    name: medex-qdrant-data
+  medex-qdrant-snapshots:
+    name: medex-qdrant-snapshots
+  # Application volumes
+  medex-data:
+    name: medex-data
+  medex-logs:
+    name: medex-logs
+  medex-cache:
+    name: medex-cache
