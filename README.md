@@ -17,7 +17,7 @@ An open-source medical AI assistant that combines multi-model LLM routing, RAG-e
 </div>
 
 <p align="center">
-  <img src="docs/assets/ui-main-consultation.png" alt="MedX Demo" width="90%">
+  <img src="docs/assets/ui-streaming-response.gif" alt="MedX Streaming Demo" width="90%">
 </p>
 
 ---
@@ -26,14 +26,20 @@ An open-source medical AI assistant that combines multi-model LLM routing, RAG-e
 
 <table>
 <tr>
-<td align="center"><strong>Clinical Consultation</strong></td>
+<td align="center"><strong>Chat &amp; Model Selector</strong></td>
 <td align="center"><strong>Drug Interaction Checker</strong></td>
-<td align="center"><strong>Emergency Triage</strong></td>
 </tr>
 <tr>
-<td><img src="docs/assets/ui-main-consultation.png" alt="Main Consultation" width="100%"></td>
-<td><img src="docs/assets/ui-drug-interactions.png" alt="Drug Interactions" width="100%"></td>
-<td><img src="docs/assets/ui-emergency-triage.png" alt="Emergency Triage" width="100%"></td>
+<td><img src="docs/assets/ui-chat-models.jpg" alt="Chat with Model Selector" width="100%"></td>
+<td><img src="docs/assets/ui-drug-interactions.jpg" alt="Drug Interactions" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><strong>Lab Interpreter</strong></td>
+<td align="center"><strong>Streaming Response</strong></td>
+</tr>
+<tr>
+<td><img src="docs/assets/ui-lab-interpreter.jpg" alt="Lab Interpreter" width="100%"></td>
+<td><img src="docs/assets/ui-streaming-response.gif" alt="Streaming Response" width="100%"></td>
 </tr>
 </table>
 
