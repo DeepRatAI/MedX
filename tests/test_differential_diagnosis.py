@@ -206,7 +206,7 @@ class TestSymptomSearch:
             ("vomitos", "náuseas"),  # Similar
         ]
 
-        for query, expected_symptom in test_cases:
+        for query, _expected_symptom in test_cases:
             result = get_differential_for_symptom(query)
             # Puede que no todos hagan match fuzzy, pero verificamos que no crashee
             # y que los que sí existen funcionen
