@@ -2271,6 +2271,23 @@ def dosage_calculator_panel() -> rx.Component:
             ),
             rx.fragment(),
         ),
+        # Inline dosage result display
+        rx.cond(
+            MedeXState.dosage_result != "",
+            rx.box(
+                rx.markdown(
+                    MedeXState.dosage_result,
+                    color=THEME.TEXT_PRIMARY,
+                ),
+                padding=Space.S4,
+                border_radius=Radius.MD,
+                background=THEME.PRIMARY_50,
+                border=f"1px solid {THEME.PRIMARY_200}",
+                width="100%",
+                margin_top=Space.S2,
+            ),
+            rx.fragment(),
+        ),
         # Artifact Catalog Grid for Dosage
         dosage_artifacts_grid(),
         gap=Space.S4,
