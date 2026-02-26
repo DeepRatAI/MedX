@@ -21,9 +21,9 @@ httpx>=0.25.0
 # OpenAI SDK for Moonshot AI (Kimi API)
 openai>=1.0.0
 
-# Streamlit for Web Interface
-streamlit>=1.28.0
-streamlit-chat>=0.1.1
+# UI Framework (Reflex)
+# Note: Reflex is managed via its own CLI (reflex init / reflex run)
+# and is not listed here as a pip dependency.
 
 # Image Processing (for medical imaging)
 Pillow>=8.3.0

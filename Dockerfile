@@ -53,11 +53,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     MEDEX_ENV=production \
     MEDEX_LOG_LEVEL=INFO \
     MEDEX_API_PORT=8000 \
-    MEDEX_UI_PORT=8501
+    MEDEX_UI_PORT=3000
 
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1 \
+    libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
@@ -89,7 +89,7 @@ RUN mkdir -p /app/data /app/logs /app/cache /app/rag_cache && \
 USER medex
 
 # Expose ports
-EXPOSE 8000 8501
+EXPOSE 8000 3000
 
 # Health check for API
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
@@ -135,25 +135,22 @@ HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=2 \
 CMD ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 # -----------------------------------------------------------------------------
-# Stage 4: UI - Streamlit web interface
+# Stage 4: UI - Reflex web interface
 # -----------------------------------------------------------------------------
 FROM production AS ui
 
-# Override healthcheck for Streamlit
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8501/healthz || exit 1
+# Healthcheck for Reflex frontend
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000 || exit 1
 
-# Expose only Streamlit port
-EXPOSE 8501
+# Expose Reflex default port
+EXPOSE 3000
 
-# Environment for Streamlit
-ENV STREAMLIT_SERVER_PORT=8501 \
-    STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
-    STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+# Environment for Reflex
+ENV REFLEX_ENV_MODE=prod
 
-# Start Streamlit
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Start Reflex (production mode)
+CMD ["reflex", "run", "--env", "prod", "--backend-only", "false"]
 
 # -----------------------------------------------------------------------------
 # Stage 5: HuggingFace - For Hugging Face Spaces deployment
@@ -193,11 +190,9 @@ EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:7860/_stcore/health || exit 1
 
-# Set environment variables for Streamlit
-ENV STREAMLIT_SERVER_PORT=7860 \
-    STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
-    STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+# Environment for Reflex on HuggingFace Spaces
+ENV REFLEX_ENV_MODE=prod \
+    PORT=7860
 
-# Run the Streamlit app
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=7860", "--server.address=0.0.0.0"]
+# Run the Reflex app on HF Spaces port
+CMD ["reflex", "run", "--env", "prod", "--backend-port", "7860"]
