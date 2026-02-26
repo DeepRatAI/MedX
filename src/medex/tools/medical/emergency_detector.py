@@ -347,7 +347,7 @@ async def detect_emergency(
     symptoms_text = " ".join(symptoms_lower)
 
     # Check each red flag pattern
-    for flag_id, flag_data in RED_FLAGS.items():
+    for _flag_id, flag_data in RED_FLAGS.items():
         matched = False
 
         # Check primary symptoms
@@ -596,7 +596,7 @@ async def check_critical_values(
         normalized_values[normalized_key] = value
 
     # Check each critical value
-    for crit_id, crit_data in CRITICAL_VALUES.items():
+    for _crit_id, crit_data in CRITICAL_VALUES.items():
         param = crit_data["parameter"].lower().replace(" ", "_")
 
         # Check if this parameter is in the provided values
