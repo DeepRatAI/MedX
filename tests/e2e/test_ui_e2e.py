@@ -200,9 +200,9 @@ class TestUIAccessibility:
         """HTML has lang attribute"""
         page.goto(medex_url, wait_until="networkidle")
 
-        html_lang = page.locator("html").get_attribute("lang")
-        # Streamlit may not set this, so we just check it exists
-        # assert html_lang is not None
+        _html_lang = page.locator("html").get_attribute("lang")
+        # Reflex should set lang attribute
+        # assert _html_lang is not None
 
     @pytest.mark.e2e
     def test_images_have_alt_text(self, page: Page, medex_url: str):
