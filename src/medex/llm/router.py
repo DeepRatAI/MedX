@@ -472,7 +472,7 @@ class LLMClient:
 
             # Emit finish event
             latency_ms = (time.time() - start_time) * 1000
-            ttft_ms = (
+            _ttft_ms = (
                 (first_token_time - start_time) * 1000 if first_token_time else None
             )
 
