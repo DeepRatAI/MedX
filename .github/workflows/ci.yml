@@ -92,6 +92,10 @@ jobs:
             tests/test_detection.py \
             tests/test_differential_diagnosis.py \
             tests/test_medex_logger.py \
+            tests/test_tools_v2.py \
+            tests/test_vision.py \
+            tests/test_knowledge.py \
+            tests/test_providers.py \
             -v --tb=short \
             --continue-on-collection-errors
         env:
@@ -198,6 +202,10 @@ jobs:
             --ignore=tests/test_detection.py \
             --ignore=tests/test_differential_diagnosis.py \
             --ignore=tests/test_medex_logger.py \
+            --ignore=tests/test_tools_v2.py \
+            --ignore=tests/test_vision.py \
+            --ignore=tests/test_knowledge.py \
+            --ignore=tests/test_providers.py \
             --continue-on-collection-errors 2>&1 | tail -50 || true
         env:
           MEDEX_ENV: test
