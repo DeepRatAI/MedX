@@ -91,6 +91,7 @@ jobs:
             tests/test_api_v2.py \
             tests/test_detection.py \
             tests/test_differential_diagnosis.py \
+            tests/test_medex_logger.py \
             -v --tb=short \
             --continue-on-collection-errors
         env:
@@ -152,14 +153,14 @@ jobs:
         run: docker inspect medx:test > /dev/null 2>&1
 
   # =========================================================================
-  # INFORMATIONAL: Extended V2 tests — not required, tracked in Issue #2
+  # INFORMATIONAL: Extended V2 tests — not blocking
   # These tests have structural failures due to API/model constructor
   # changes during V2 development. Tests reference renamed methods or
-  # changed dataclass fields. Plan: fix in milestone v0.1.1.
+  # changed dataclass fields. Plan: fix progressively in v0.1.1.
   #
-  # Coverage: test_agent, test_integration_v2, test_llm, test_medical,
-  #           test_observability, test_rag, test_security, test_tools,
-  #           test_memory
+  # Coverage: test_agent, test_engine, test_integration_v2, test_llm,
+  #           test_medical, test_memory, test_observability, test_rag,
+  #           test_security, test_tools
   # =========================================================================
   test-extended:
     name: Extended Tests (informational)
@@ -189,59 +190,20 @@ jobs:
       - name: Run extended tests (known structural failures)
         continue-on-error: true
         run: |
-          echo "::notice::Extended V2 tests — informational only (Issue #2)"
-          echo "::notice::These tests have structural failures from API changes during V2 development"
+          echo "::notice::Extended V2 tests — informational only"
           pytest tests/ -v --tb=short \
             --ignore=tests/e2e/ \
             --ignore=tests/test_infrastructure.py \
-            --ignore=tests/test_api.py \
-            --ignore=tests/test_i18n.py \
-            --ignore=tests/test_medex_logger.py \
             --ignore=tests/test_api_v2.py \
             --ignore=tests/test_detection.py \
             --ignore=tests/test_differential_diagnosis.py \
+            --ignore=tests/test_medex_logger.py \
             --continue-on-collection-errors 2>&1 | tail -50 || true
         env:
           MEDEX_ENV: test
           PYTHONDONTWRITEBYTECODE: "1"
 
-  # =========================================================================
-  # INFORMATIONAL: Legacy V1 tests — not required, tracked in Issue #2
-  # These tests use V1-style imports (api.main, i18n, medex_logger)
-  # that reference modules not packaged in the V2 architecture.
-  # Plan: fix imports → move to required (see milestone v0.1.1)
-  # =========================================================================
-  test-legacy:
-    name: Legacy Tests (informational)
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install fastapi uvicorn pydantic pydantic-settings python-dotenv
-          pip install aiohttp httpx requests websockets anyio markdown
-          pip install sqlalchemy alembic asyncpg psycopg2-binary redis qdrant-client
-          pip install scikit-learn numpy scipy pandas Pillow
-          pip install huggingface-hub openai sentence-transformers
-          pip install pytest pytest-asyncio pytest-cov pytest-mock
-          pip install -e . --no-deps
-
-      - name: Run legacy tests (expected failures)
-        continue-on-error: true
-        run: |
-          echo "::notice::Legacy V1 tests — informational only (Issue #2)"
-          pytest tests/test_api.py tests/test_i18n.py tests/test_medex_logger.py \
-            -v --tb=short --continue-on-collection-errors 2>&1 | tail -30 || true
-        env:
-          MEDEX_ENV: test
-          PYTHONDONTWRITEBYTECODE: "1"
+  # Legacy V1 test job removed: Issue #2 resolved.
+  # - test_api.py deleted (V1 api/ module removed; test_api_v2.py covers V2 API)
+  # - test_i18n.py deleted (no i18n module exists; Issue #4 will build it)
+  # - test_medex_logger.py promoted to required tests (39/39 pass)
