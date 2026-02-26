@@ -147,7 +147,7 @@ class SemanticChunker(BaseChunker):
         sections = self._split_into_sections(content)
 
         char_offset = 0
-        for section_idx, (header, section_content) in enumerate(sections):
+        for _section_idx, (header, section_content) in enumerate(sections):
             section_chunks = self._chunk_section(
                 section_content,
                 document_id=document.id,
