@@ -619,7 +619,7 @@ class AgentController:
 
     def set_memory_service(self, service: Any) -> None:
         """Set memory service."""
-        self.memory_service = memory_service
+        self.memory_service = service
 
     # =========================================================================
     # Main Entry Points
@@ -657,7 +657,7 @@ class AgentController:
                 logger.warning(f"Failed to load history: {e}")
 
         # Initialize state
-        state = self.state_manager.initialize(context)
+        self.state_manager.initialize(context)
 
         try:
             # Run agent loop
@@ -713,7 +713,7 @@ class AgentController:
         )
 
         # Initialize state
-        state = self.state_manager.initialize(context)
+        self.state_manager.initialize(context)
 
         # Setup event forwarding
         event_queue: asyncio.Queue[AgentEvent] = asyncio.Queue()
@@ -837,7 +837,7 @@ class AgentController:
         # Add any tool results
         if context.tool_results:
             emergency_response += "**Assessment:**\n"
-            for tool, result in context.tool_results.items():
+            for _tool, result in context.tool_results.items():
                 if isinstance(result, dict):
                     emergency_response += f"- {result.get('recommendation', '')}\n"
 
