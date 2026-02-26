@@ -26,6 +26,7 @@ from medex.medical.models import (
     DiagnosticHypothesis,
     DiagnosticPlan,
     Medication,
+    Specialty,
     TreatmentPlan,
     TriageAssessment,
     TriageLevel,
