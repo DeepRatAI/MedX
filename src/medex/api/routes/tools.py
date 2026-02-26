@@ -14,6 +14,7 @@ These endpoints use local databases/dictionaries for instant results.
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from typing import Any
 
@@ -133,7 +134,7 @@ async def check_interactions(
     """
     try:
         # Call the tool directly (synchronous, uses local dictionary)
-        result: DrugInteractionResult = await check_drug_interactions(
+        result: DrugInteractionResult = await check_drug_interactions(  # noqa: F821
             drugs=request.drugs
         )
 
@@ -161,7 +162,7 @@ async def check_interactions(
         logger.error(f"Drug interaction check failed: {e}")
         raise HTTPException(
             status_code=500, detail=f"Error checking interactions: {str(e)}"
-        )
+        ) from e
 
 
 # =============================================================================
@@ -184,7 +185,7 @@ async def calculate_drug_dosage(request: DosageRequest) -> DosageResponse:
     """
     try:
         # Call the tool directly
-        result: DosageResult = await calculate_dosage(
+        result: DosageResult = await calculate_dosage(  # noqa: F821
             drug_name=request.drug_name,
             patient_weight_kg=request.patient_weight,
             patient_age_years=request.patient_age,
@@ -207,7 +208,7 @@ async def calculate_drug_dosage(request: DosageRequest) -> DosageResponse:
         logger.error(f"Dosage calculation failed: {e}")
         raise HTTPException(
             status_code=500, detail=f"Error calculating dosage: {str(e)}"
-        )
+        ) from e
 
 
 # =============================================================================
@@ -230,7 +231,7 @@ async def interpret_lab(request: LabInterpretRequest) -> LabInterpretResponse:
     """
     try:
         # Call the tool directly
-        result: LabInterpretationResult = await interpret_lab_value(
+        result: LabInterpretationResult = await interpret_lab_value(  # noqa: F821
             test_name=request.test_name,
             value=request.value,
             unit=request.unit,
@@ -254,7 +255,7 @@ async def interpret_lab(request: LabInterpretRequest) -> LabInterpretResponse:
         logger.error(f"Lab interpretation failed: {e}")
         raise HTTPException(
             status_code=500, detail=f"Error interpreting lab value: {str(e)}"
-        )
+        ) from e
 
 
 # =============================================================================
