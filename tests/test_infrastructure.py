@@ -508,14 +508,14 @@ class TestInfrastructureIntegration:
 
         messages_for_cache = []
 
-        for i, (role, content) in enumerate(
+        for _i, (role, content) in enumerate(
             [
                 (MessageRole.USER, "What is hypertension?"),
                 (MessageRole.ASSISTANT, "Hypertension is high blood pressure..."),
                 (MessageRole.USER, "What are the symptoms?"),
             ]
         ):
-            msg = await msg_repo.create_message(
+            msg = await msg_repo.create_message(  # noqa: F841
                 conversation_id=conv.id,
                 role=role,
                 content=content,
