@@ -86,7 +86,9 @@ from .websocket import (
     create_connection_manager,
     create_websocket_handler,
 )
-from .websocket import WSMessage as WebSocketMessage
+from .websocket import (
+    WSMessage as WebSocketMessage,
+)
 
 __all__ = [
     # App
