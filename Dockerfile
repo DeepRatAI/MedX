@@ -56,8 +56,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     MEDEX_UI_PORT=3000
 
 # Install runtime dependencies only
+# Note: libgl1-mesa-glx was renamed to libgl1 in Debian Trixie (python:3.12-slim)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
