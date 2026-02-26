@@ -139,7 +139,7 @@ class BaseEmbedder(ABC):
         texts = [c.content for c in chunks]
         embeddings = await self.embed_texts(texts)
 
-        for chunk, embedding in zip(chunks, embeddings):
+        for chunk, embedding in zip(chunks, embeddings, strict=False):
             chunk.embedding = embedding.vector
 
         return chunks
@@ -300,7 +300,7 @@ class SentenceTransformerEmbedder(BaseEmbedder):
                 all_vectors.extend(batch_vectors)
 
             # Fill in results and cache
-            for idx, vector in zip(uncached_indices, all_vectors):
+            for idx, vector in zip(uncached_indices, all_vectors, strict=False):
                 embeddings[idx] = Embedding(
                     vector=vector,
                     model=self.config.model_name,
@@ -428,7 +428,7 @@ class OpenAIEmbedder(BaseEmbedder):
                 all_vectors.extend(batch_vectors)
 
             # Fill results
-            for idx, vector in zip(uncached_indices, all_vectors):
+            for idx, vector in zip(uncached_indices, all_vectors, strict=False):
                 if self.config.normalize:
                     vector = self._normalize(vector)
 

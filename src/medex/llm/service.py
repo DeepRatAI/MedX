@@ -278,7 +278,7 @@ class LLMService:
         )
 
         # Execute request
-        start_time = time.time()
+        _start_time = time.time()
 
         if use_stream:
             # Collect streaming response

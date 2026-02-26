@@ -556,7 +556,7 @@ class ClinicalCase:
             "symptoms": [s.to_dict() for s in self.symptoms],
             "vital_signs": self.vital_signs.to_dict() if self.vital_signs else None,
             "physical_exam": self.physical_exam,
-            "lab_values": [l.to_dict() for l in self.lab_values],
+            "lab_values": [lv.to_dict() for lv in self.lab_values],
             "imaging": self.imaging,
             "triage": self.triage.to_dict() if self.triage else None,
             "differential_diagnosis": [

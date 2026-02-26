@@ -156,7 +156,7 @@ class CrossEncoderReranker(BaseReranker):
         normalized_scores = [(s - min_score) / score_range for s in scores]
 
         # Update results with rerank scores
-        for result, rerank_score in zip(results, normalized_scores):
+        for result, rerank_score in zip(results, normalized_scores, strict=False):
             result.rerank_score = float(rerank_score)
             result.relevance = self._score_to_relevance(rerank_score)
 
@@ -540,7 +540,8 @@ class EnsembleReranker(BaseReranker):
             chunk_scores = all_scores[result.chunk.id]
             if chunk_scores:
                 weighted_score = (
-                    sum(s * w for s, w in zip(chunk_scores, weights)) / total_weight
+                    sum(s * w for s, w in zip(chunk_scores, weights, strict=False))
+                    / total_weight
                 )
                 result.rerank_score = weighted_score
                 result.relevance = self._score_to_relevance(weighted_score)

@@ -340,7 +340,7 @@ class DiagnosticReasoner:
 
         # Build hypotheses
         hypotheses = []
-        for dx_id, score, dx_pattern in scored_diagnoses[
+        for _dx_id, score, dx_pattern in scored_diagnoses[
             : self.config.max_differential
         ]:
             hypothesis = self._build_hypothesis(
@@ -425,7 +425,7 @@ class DiagnosticReasoner:
         pattern_labs = dx_pattern.get("labs", [])
         if pattern_labs:
             lab_text = " ".join(lab_findings)
-            matches = sum(1 for l in pattern_labs if l in lab_text)
+            matches = sum(1 for lab in pattern_labs if lab in lab_text)
             lab_score = matches / len(pattern_labs)
         elif lab_findings:
             lab_score = 0.1  # Some credit for having labs
@@ -464,9 +464,9 @@ class DiagnosticReasoner:
             if s in symptoms_text:
                 supporting.append(f"Presenta: {s}")
 
-        for l in dx_pattern.get("labs", []):
-            if any(l in lf for lf in lab_findings):
-                supporting.append(f"Laboratorio: {l}")
+        for lab in dx_pattern.get("labs", []):
+            if any(lab in lf for lf in lab_findings):
+                supporting.append(f"Laboratorio: {lab}")
 
         # Determine next steps
         next_steps = self._get_diagnostic_steps(dx_pattern, case)
@@ -539,7 +539,7 @@ class DiagnosticReasoner:
             )
 
         # Always add basic labs if not already ordered
-        existing_labs = {l.name.lower() for l in case.lab_values}
+        existing_labs = {lv.name.lower() for lv in case.lab_values}
         if "hemograma" not in existing_labs and "hemoglobina" not in existing_labs:
             steps.append("Hemograma completo")
         if "bioquímica" not in existing_labs:

@@ -267,8 +267,8 @@ class TestTracing:
 
     def test_nested_spans(self, tracer: Tracer) -> None:
         """Test nested spans share trace ID."""
-        with tracer.start_span("parent") as parent:
-            with tracer.start_span("child") as child:
+        with tracer.start_span("parent") as parent:  # noqa: F841
+            with tracer.start_span("child") as child:  # noqa: F841
                 pass
 
         tracer.flush()
@@ -300,7 +300,7 @@ class TestTracing:
     def test_span_error(self, tracer: Tracer) -> None:
         """Test span error handling."""
         try:
-            with tracer.start_span("error_span") as span:
+            with tracer.start_span("error_span") as span:  # noqa: F841
                 raise ValueError("Test error")
         except ValueError:
             pass
@@ -316,7 +316,7 @@ class TestTracing:
         """Test span duration calculation."""
         import time
 
-        with tracer.start_span("timed_span") as span:
+        with tracer.start_span("timed_span") as span:  # noqa: F841
             time.sleep(0.01)
 
         tracer.flush()

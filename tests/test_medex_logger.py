@@ -67,7 +67,7 @@ class TestLoggerInitialization:
     def test_logger_creates_log_directory(self, temp_log_dir):
         """Verifica que se crea el directorio de logs."""
         log_path = Path(temp_log_dir) / "new_logs"
-        logger = MedeXLogger(log_dir=str(log_path), enable_console=False)
+        _logger = MedeXLogger(log_dir=str(log_path), enable_console=False)
         assert log_path.exists()
 
     def test_logger_generates_session_id(self, logger):
@@ -426,7 +426,7 @@ class TestDataClasses:
 
         d = audit.to_dict()
         assert d["action"] == "test_action"
-        assert d["success"] == True
+        assert d["success"] is True
 
 
 # ============================================================================

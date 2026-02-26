@@ -981,8 +981,9 @@ class ToolExecutionRepository(BaseRepository[ToolExecution]):
                 func.avg(ToolExecution.latency_ms).label("avg_latency"),
                 func.sum(
                     func.cast(
-                        ToolExecution.cache_hit == True, type_=func.Integer
-                    )  # noqa: E712
+                        ToolExecution.cache_hit == True,  # noqa: E712
+                        type_=func.Integer,
+                    )
                 ).label("cache_hits"),
             )
             .where(ToolExecution.tool_name == tool_name)
