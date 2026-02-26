@@ -547,7 +547,7 @@ class ResponseParser:
         # Extract CIE-10 codes
         if self.config.extract_cie10:
             cie10_matches = CIE10_PATTERN.findall(content)
-            entities["cie10_codes"] = list(set(c.upper() for c in cie10_matches))
+            entities["cie10_codes"] = list({c.upper() for c in cie10_matches})
 
         # Extract drug mentions
         if self.config.extract_drugs:
