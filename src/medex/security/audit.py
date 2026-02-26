@@ -56,7 +56,7 @@ class AuditBackend(ABC):
         """Count matching events."""
         pass
 
-    async def close(self) -> None:
+    async def close(self) -> None:  # noqa: B027
         """Close backend connection."""
         pass
 
