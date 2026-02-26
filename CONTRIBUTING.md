@@ -7,10 +7,18 @@ Thank you for your interest in contributing to MedeX! This document provides gui
 - [Code of Conduct](#code-of-conduct)
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
+- [Docker Setup](#docker-setup)
+- [Environment Variables](#environment-variables)
+- [Running the UI (Reflex)](#running-the-ui-reflex)
 - [Making Changes](#making-changes)
 - [Pull Request Process](#pull-request-process)
 - [Coding Standards](#coding-standards)
 - [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
+
+> **Full reference:** See [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for the
+> complete development environment guide with API reference, project structure,
+> and advanced configuration.
 
 ## 📜 Code of Conduct
 
@@ -28,12 +36,12 @@ This project adheres to a Code of Conduct. By participating, you are expected to
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/Med-X-KimiK2-RAG.git
-   cd Med-X-KimiK2-RAG
+   git clone https://github.com/YOUR_USERNAME/MedX.git
+   cd MedX
    ```
 3. **Add the upstream remote**:
    ```bash
-   git remote add upstream https://github.com/DeepRatAI/Med-X-KimiK2-RAG.git
+   git remote add upstream https://github.com/DeepRatAI/MedX.git
    ```
 
 ## 💻 Development Setup
@@ -42,7 +50,8 @@ This project adheres to a Code of Conduct. By participating, you are expected to
 
 - Python 3.10+
 - Git
-- A Moonshot/Kimi API key (for testing)
+- Docker & Docker Compose (optional, for full-stack development)
+- A Moonshot/Kimi API key (optional, only needed for LLM features)
 
 ### Environment Setup
 
@@ -71,6 +80,51 @@ pytest tests/ --cov=src/medex --cov-report=html
 
 # Run specific test file
 pytest tests/test_detection.py -v
+```
+
+## 🐳 Docker Setup
+
+```bash
+# Full stack (API + UI + infrastructure)
+docker compose up --build -d
+
+# API only
+docker compose up api -d
+
+# Rebuild after code changes
+docker compose up --build -d
+
+# View logs
+docker compose logs -f api
+```
+
+## 🔑 Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# Required for LLM features
+KIMI_API_KEY=your_kimi_api_key_here
+
+# Optional
+HF_TOKEN=your_huggingface_token       # For embedding models
+DATABASE_URL=postgresql+asyncpg://...  # Defaults to SQLite
+REDIS_URL=redis://localhost:6379/0     # For caching
+QDRANT_URL=http://localhost:6333       # For vector store
+MEDEX_ENV=development                  # development | test | production
+MEDEX_LOG_LEVEL=DEBUG                  # DEBUG | INFO | WARNING | ERROR
+```
+
+> **Note:** Medical tools (drug interactions, dosage calculator, lab interpreter,
+> triage) work without any API keys — they use local databases.
+
+## 🖥️ Running the UI (Reflex)
+
+```bash
+cd ui
+reflex init    # First time only
+reflex run --env dev
+# UI available at http://localhost:3000
 ```
 
 ## ✏️ Making Changes
@@ -264,6 +318,35 @@ When adding medical content:
 3. **Use proper medical terminology**
 4. **Add appropriate disclaimers**
 5. **Review with medical professionals** when possible
+
+## 🔧 Troubleshooting
+
+**Import errors after install:**
+```bash
+pip install -e . --no-deps
+pip install -r requirements.txt
+```
+
+**Port already in use:**
+```bash
+lsof -i :8000  # API
+lsof -i :3000  # UI
+kill -9 <PID>
+```
+
+**Pre-commit hook failures:**
+```bash
+black src/ tests/ && ruff check --fix src/ tests/
+git add -u && git commit
+```
+
+**Database connection errors:**
+```bash
+# Use SQLite (no setup needed):
+unset DATABASE_URL
+# Or check if Postgres is running:
+docker compose ps postgres
+```
 
 ## ❓ Questions?
 
