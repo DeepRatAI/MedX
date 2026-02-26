@@ -141,3 +141,11 @@ exclude_lines = [
     "raise NotImplementedError",
     "if TYPE_CHECKING:",
 ]
+
+# Bandit security linter configuration
+# B104: binding to 0.0.0.0 is intentional — the API server runs inside
+# Docker containers where binding to all interfaces is required for
+# container networking. Access control is handled by the container
+# orchestrator / reverse proxy, not by bind address restriction.
+[tool.bandit]
+skips = ["B104"]
